@@ -1,0 +1,261 @@
+*
+{
+	margin: 0;
+	padding:0;
+	font-family: "Segoe UI";
+}
+ul.navbar-navKW {
+    float: right;
+    list-style: none;
+    padding-top: 15px;
+}
+li.subMenu
+{
+	display: inline;
+	padding-left: 15px;
+}
+a.jajal
+{
+	color: #777;
+	text-decoration: none;
+}
+.jajal:hover
+{
+	color: #333;
+}
+.modal-content
+{
+	width: 500px;
+	margin-top: 100px;
+	margin-left: 55px;
+}
+
+.modal-content.content
+{
+	width: auto;
+	margin: auto;
+}
+label.suksesDaftar
+{
+	margin-left: 20px;
+}
+.navbar-brand
+{
+	color: #000000;
+}
+
+.header-overlay
+{
+  position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #080d15;
+    opacity: .5;
+}
+
+#about
+{
+	width: 100%;
+	height: 200px;
+	background-color: white;
+	margin-top: -20px;
+	padding-left: 100px;
+	padding-top: 60px;
+}
+
+.scrolled 
+{
+  background: #f7faff;
+  box-shadow: 0px -7px 20px 1px #444;
+  border-radius: 0px;
+}
+
+.cbaBtn
+{
+	background: transparent;
+	color: white;
+	text-decoration: none;
+}
+
+.member-profile
+{
+	border-collapse: collapse;
+}
+
+.myProfile
+{
+	font-size: 40px;
+}
+
+.apaSarana
+{
+  font-size: 15px;
+}
+
+.gambarHiw
+{
+  width: 200px;
+  height: 200px;
+}
+
+.hiwcontainer
+{
+
+  position: relative;
+  margin:auto;
+  text-align: center;
+  font-family: "Segoe UI";
+}
+
+.hiwcontainer h1
+{
+  margin-top: 50px;
+}
+
+.partner-container
+{
+  position: relative;
+  margin:auto;
+  text-align: center;
+  font-family: "Segoe UI";
+}
+
+.content1-3
+{
+  width: 88%;
+  margin: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+#howitworks
+{ 
+  margin-top: 170px;
+}
+
+#partner
+{ 
+  margin-top: 200px;
+}
+
+#footer
+{
+  margin-top: 200px;
+  background-color: #ff282f;
+}
+
+.footer-container
+{
+  margin:0 auto;
+  width: 70%;
+  height: 100px;
+}
+
+.kataFooter
+{
+  font-size: 30px;
+  padding-top: 35px;
+  color: white;
+}
+
+.tentang p:hover
+{
+  background-color: red;
+}
+
+/*Form peminjaman*/
+input#id_barang_keluare
+{
+	display: block;
+  width: 80%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+       -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+input[type="button"]#btn_id_barang_keluar
+{
+	display: block;
+  width: 15%;
+  height: 34px;
+  padding: 6px 12px;
+  float: right;
+  margin-top: -34px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+       -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+input#id_peminjamane
+{
+	display: block;
+  width: 80%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+       -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+input[type="button"]#btn_id_peminjaman
+{
+	display: block;
+  width: 15%;
+  height: 34px;
+  padding: 6px 12px;
+  float: right;
+  margin-top: -34px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+       -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+button.buttonku
+{
+  width: 100px;
+  height: 30px;
+}
+
+.nyobane
+{
+  padding-top: 20px;
+}
