@@ -21,13 +21,6 @@ class Barang extends CI_Controller
 		}
 	}
 
-	//For Barang
-	public function ndeleng_barang()
-	{
-		$data['t_barang'] = $this->modelku->tampil_data('t_barang')->result();
-		$this->load->view('admin/barang/v_barang', $data);
-	}
-
 	public function ngedit_barang($id)
 	{
 		$where = array('id_barang' => $id);
@@ -117,7 +110,7 @@ class Barang extends CI_Controller
 	{
 		$where = array
 		(
-			'id' => $id,
+			'id_pengembalian' => $id,
 		);
 
 		$data = $this->modelku->get_by_id('t_pengembalian', $where);

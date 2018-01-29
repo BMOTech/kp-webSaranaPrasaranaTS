@@ -4,50 +4,46 @@
 	<title>Barang Hilang</title>
 </head>
 <body>
-	<div class="container">
-		<div class="kecilna" style="width: 95%">
-			<h1 class="text-center">Data Pengembalian</h1><br>
-			<div id="tmpModal"></div>
-			<?=$this->session->flashdata('notif')?>
-			<div class="table-responsive">
-			<table id="table_id" class="table table-bordered table-striped table-hover">
-				<thead>
-					<tr>
-						<th>ID Peminjaman</th>
-						<th>ID Barang</th>
-						<th>Tanggal Kembali</th>
-						<th>Jumlah Kembali</th>
-						<th>Penanggung Jawab</th>
-						<th>Aksi</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php
-					foreach($t_pengembalian as $tkmbli)
-					{?>
-						<tr>
-							<td><?php echo $tkmbli->id_peminjaman ?></td>
-							<td><?php echo $tkmbli->id_barang?></td>
-							<td><?php echo $tkmbli->tgl_kembali ?></td>
-							<td><?php echo $tkmbli->jumlah_kembali ?></td>
-							<td><?php echo $tkmbli->penanggung_jawab ?></td>
-							<td>
-								<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $tkmbli->id_pengembalian;?>)">Edit</button>
-								<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tkmbli->id_peminjaman;?>&quot;)">Detail</button>
-								<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $tkmbli->id_peminjaman;?>&quot;)">Hapus</button>
-							</td>
-						</tr>
-					<?php } ?>
-				</tbody>
-			</table>
-			<table class="table table-bordered table-striped">
+	<h1 class="text-center">Data Pengembalian</h1><br>
+	<div id="tmpModal"></div>
+	<?=$this->session->flashdata('notif')?>
+	<div class="table-responsive">
+	<table id="table_id" class="table table-bordered table-striped table-hover">
+		<thead>
+			<tr>
+				<th>ID Peminjaman</th>
+				<th>ID Barang</th>
+				<th>Tanggal Kembali</th>
+				<th>Jumlah Kembali</th>
+				<th>Penanggung Jawab</th>
+				<th>Aksi</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+			foreach($t_pengembalian as $tkmbli)
+			{?>
 				<tr>
-					<button class="btn btn-danger" onclick="ngapus_semua_barang()">Hapus Semua Data</button>
+					<td><?php echo $tkmbli->id_peminjaman ?></td>
+					<td><?php echo $tkmbli->id_barang?></td>
+					<td><?php echo $tkmbli->tgl_kembali ?></td>
+					<td><?php echo $tkmbli->jumlah_kembali ?></td>
+					<td><?php echo $tkmbli->penanggung_jawab ?></td>
+					<td>
+						<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $tkmbli->id_pengembalian;?>)">Edit</button>
+						<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tkmbli->id_peminjaman;?>&quot;)">Detail</button>
+						<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $tkmbli->id_peminjaman;?>&quot;)">Hapus</button>
+					</td>
 				</tr>
-			</table>
-		</div>
-		</div>
-	</div>
+			<?php } ?>
+		</tbody>
+	</table>
+	<table class="table table-bordered table-striped">
+		<tr>
+			<button class="btn btn-danger" onclick="ngapus_semua_barang()">Hapus Semua Data</button>
+		</tr>
+	</table>
+</div>
 
 	<!-- Bootstrap modal Edit and Add -->
 	  <div class="modal fade" id="modal_form" role="dialog">

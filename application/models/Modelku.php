@@ -507,6 +507,12 @@ class Modelku extends CI_Model
 		return $query->row();
 	}
 
+	public function password_update($id)
+	{
+		$qry = $this->db->query("select password from t_admin where id='$id'");
+		return $qry->row();
+	}
+
 	public function barang_update($where, $data, $table)
 	{
 		$this->db->update($table, $data, $where);

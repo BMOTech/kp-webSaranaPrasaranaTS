@@ -4,52 +4,48 @@
 	<title>Barang Hilang</title>
 </head>
 <body>
-	<div class="container">
-		<div class="kecilna" style="width: 100%">
-			<h1 class="text-center">Data Barang Hilang</h1>
-			<div id="tmpModal"></div>
-			<?=$this->session->flashdata('notif')?>
-			<button class="btn btn-success" onclick="tambah_barang()"><i class="glyphicon glyphicon-plus"></i> Input data barang hilang</button>
-			<br />
-			<br />
-			<div class="table-responsive">
-			<table id="table_id" class="table table-bordered table-striped table-hover">
-				<thead>
-					<tr>
-						<th>ID Barang Keluar</th>
-						<th>ID Barang</th>
-						<th>Tanggal Hilang</th>
-						<th>Alasan Hilang</th>
-						<th>Penanggung Jawab</th>
-						<th>Solusi</th>
-						<th>Jumlah Hilang</th>
-						<th>Aksi</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php
-					foreach($t_kehilangan as $tilang)
-					{?>
-						<tr>
-							<td><?php echo $tilang->id_barang_keluar ?></td>
-							<td><?php echo $tilang->id_barang ?></td>
-							<td><?php echo $tilang->tgl_hilang ?></td>
-							<td><?php echo $tilang->alasan_hilang ?></td>
-							<td><?php echo $tilang->penanggung_jawab ?></td>
-							<td><?php echo $tilang->solusi ?></td>
-							<td><?php echo $tilang->jumlah_hilang ?></td>
-							<td>
-								<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $tilang->id;?>)">Edit</button>
-								<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tilang->id_barang_keluar;?>&quot;)">Detail</button>
-								<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $tilang->id_barang_keluar;?>&quot;)">Hapus</button>
-							</td>
-						</tr>
-					<?php } ?>
-				</tbody>
-			</table>
-		</div>
-		</div>
-	</div>
+	<h1 class="text-center">Data Barang Hilang</h1>
+	<div id="tmpModal"></div>
+	<?=$this->session->flashdata('notif')?>
+	<button class="btn btn-success" onclick="tambah_barang()"><i class="glyphicon glyphicon-plus"></i> Input data barang hilang</button>
+	<br />
+	<br />
+	<div class="table-responsive">
+	<table id="table_id" class="table table-bordered table-striped table-hover">
+		<thead>
+			<tr>
+				<th>ID Barang Keluar</th>
+				<th>ID Barang</th>
+				<th>Tanggal Hilang</th>
+				<th>Alasan Hilang</th>
+				<th>Penanggung Jawab</th>
+				<th>Solusi</th>
+				<th>Jumlah Hilang</th>
+				<th>Aksi</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+			foreach($t_kehilangan as $tilang)
+			{?>
+				<tr>
+					<td><?php echo $tilang->id_barang_keluar ?></td>
+					<td><?php echo $tilang->id_barang ?></td>
+					<td><?php echo $tilang->tgl_hilang ?></td>
+					<td><?php echo $tilang->alasan_hilang ?></td>
+					<td><?php echo $tilang->penanggung_jawab ?></td>
+					<td><?php echo $tilang->solusi ?></td>
+					<td><?php echo $tilang->jumlah_hilang ?></td>
+					<td>
+						<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $tilang->id;?>)">Edit</button>
+						<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tilang->id_barang_keluar;?>&quot;)">Detail</button>
+						<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $tilang->id_barang_keluar;?>&quot;)">Hapus</button>
+					</td>
+				</tr>
+			<?php } ?>
+		</tbody>
+	</table>
+</div>
 
 	<!-- Bootstrap modal Edit and Add -->
 	  <div class="modal fade" id="modal_form" role="dialog">

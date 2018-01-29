@@ -55,7 +55,7 @@
                                 {
                                     $('#container').append(
                                         '<strong>No Inv Barang Ke ' + count + '</strong><br />' 
-                                        + '<select id="field_' + count + '" name="fields[]' + '"  class="form-control no_inv" ><?php $noInv = $this->modelku->select_invPinjam() ?> <option value="" selected="selected">Pilih no inventaris</option> <?php foreach($noInv->result() as $inv){ ?> <option value="<?php echo $inv->no_inv ?>"><?php echo $inv->no_inv ?></option><?php } ?></select><br>' );
+                                        + '<select id="field_' + count + '" name="fields[]' + '"  class="form-control no_inv" ><?php $noInv = $this->modelku->select_invPinjam() ?> <option value="" selected="selected" disabled>Pilih no inventaris</option> <?php foreach($noInv->result() as $inv){ ?> <option value="<?php echo $inv->no_inv ?>"><?php echo $inv->no_inv ?></option><?php } ?></select><br>' );
                                 }
                                 else
                                 {
@@ -141,6 +141,53 @@
         $("#field").focusout(function() {
             njajal();    
         });
+
+        $(document).ready(function() {
+        var count =0;
+        var previous;
+        var selectedData = [];
+        $('body').on('click','.no_inv',function(){
+              previous = this.value;
+             
+        });
+
+
+        $('body').on('change','.no_inv',function(){
+            var val = this.value;
+            var id = $(this).attr('id');
+            
+            if(val != ''){
+            
+                $(".no_inv").each(function(){
+                   var newID = $(this).attr('id');
+                   if(id != newID){
+                      $('#'+newID).children('option[value="' + val + '"]').prop('disabled',true);
+                       $('#'+newID).children('option[value="' + previous + '"]').prop('disabled',true);
+                       
+                       selectedData.splice($.inArray(val, selectedData),1);
+                   }else{
+                      selectedData.push(val);
+                   
+                   }
+                
+                });
+
+                
+            }else{
+
+              $(".no_inv").each(function(){
+                   var newID = $(this).attr('id');
+                   if(id != newID){
+                    $('#'+newID).children('option[value="' + val + '"]').prop('disabled',true);
+                      $('#'+newID).children('option[value="' + previous + '"]').prop('disabled',true);
+                      
+                   }
+                
+                });
+            
+            }
+        });
+    });
     </script>
 </body>
 </html>

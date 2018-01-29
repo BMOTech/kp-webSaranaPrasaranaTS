@@ -4,58 +4,54 @@
 	<title>Histori Pinjam</title>
 </head>
 <body>
-	<div class="container">
-		<div class="kecilna" style="width: 120%">
-			<h1 class="text-center">Histori Peminjaman</h1><br>
-			<div id="tmpModal"></div>
-			<?=$this->session->flashdata('notif')?>
-			<div class="table-responsive">
-			<table id="table_id" class="table table-bordered table-striped table-hover">
-				<thead>
-					<tr>
-						<th>ID Peminjaman</th>
-						<th>ID Barang Keluar</th>
-						<th>ID Barang</th>
-						<th>Tanggal Peminjaman</th>
-						<th>Tanggal Kembali</th>
-						<th>Peminjam</th>
-						<th>Kondisi</th>
-						<th>Jumlah</th>
-						<th>Keterangan</th>
-						<th>Aksi</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php
-					foreach($t_histori_pinjam as $thpinjam)
-					{?>
-						<tr>
-							<td><?php echo $thpinjam->id_peminjaman?></td>
-							<td><?php echo $thpinjam->id_barang_keluar?></td>
-							<td><?php echo $thpinjam->id_barang?></td>
-							<td><?php echo $thpinjam->tgl_peminjaman ?></td>
-							<td><?php echo $thpinjam->tgl_kembali ?></td>
-							<td><?php echo $thpinjam->peminjam ?></td>
-							<td><?php echo $thpinjam->kondisi ?></td>
-							<td><?php echo $thpinjam->jumlah ?></td>
-							<td><?php echo $thpinjam->keterangan ?></td> 
-							<td>
-								<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $thpinjam->id;?>)">Edit</button>
-								<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $thpinjam->id_peminjaman;?>&quot;)">Detail</button>
-								<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $thpinjam->id_peminjaman;?>&quot;)">Hapus</button>
-							</td>
-						</tr>
-					<?php } ?>
-				</tbody>
-			</table>
-				<table class="table table-bordered table-striped">
-					<tr>
-						<button class="btn btn-danger" onclick="ngapus_semua_barang()">Hapus Semua Data</button>
-					</tr>
-				</table>
-		</div>
-		</div>
-	</div>
+	<h1 class="text-center">Histori Peminjaman</h1><br>
+	<div id="tmpModal"></div>
+	<?=$this->session->flashdata('notif')?>
+	<div class="table-responsive">
+	<table id="table_id" class="table table-bordered table-striped table-hover">
+		<thead>
+			<tr>
+				<th>ID Peminjaman</th>
+				<th>ID Barang Keluar</th>
+				<th>ID Barang</th>
+				<th>Tanggal Peminjaman</th>
+				<th>Tanggal Kembali</th>
+				<th>Peminjam</th>
+				<th>Kondisi</th>
+				<th>Jumlah</th>
+				<th>Keterangan</th>
+				<th>Aksi</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+			foreach($t_histori_pinjam as $thpinjam)
+			{?>
+				<tr>
+					<td><?php echo $thpinjam->id_peminjaman?></td>
+					<td><?php echo $thpinjam->id_barang_keluar?></td>
+					<td><?php echo $thpinjam->id_barang?></td>
+					<td><?php echo $thpinjam->tgl_peminjaman ?></td>
+					<td><?php echo $thpinjam->tgl_kembali ?></td>
+					<td><?php echo $thpinjam->peminjam ?></td>
+					<td><?php echo $thpinjam->kondisi ?></td>
+					<td><?php echo $thpinjam->jumlah ?></td>
+					<td><?php echo $thpinjam->keterangan ?></td> 
+					<td>
+						<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $thpinjam->id;?>)">Edit</button>
+						<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $thpinjam->id_peminjaman;?>&quot;)">Detail</button>
+						<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $thpinjam->id_peminjaman;?>&quot;)">Hapus</button>
+					</td>
+				</tr>
+			<?php } ?>
+		</tbody>
+	</table>
+		<table class="table table-bordered table-striped">
+			<tr>
+				<button class="btn btn-danger" onclick="ngapus_semua_barang()">Hapus Semua Data</button>
+			</tr>
+		</table>
+</div>
 
 	<!-- Bootstrap modal Edit and Add -->
 	  <div class="modal fade" id="modal_form" role="dialog">

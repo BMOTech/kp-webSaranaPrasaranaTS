@@ -4,49 +4,45 @@
 	<title>Sarana dan Prasarana</title>
 </head>
 <body>
-	<div class="container">
-		<div class="kecilna" style="width: 95%">
-			<h1 class="text-center">Data Barang Keluar</h1><br>
-			<div id="tmpModal"></div>
-			<?=$this->session->flashdata('notif')?>
-			<div class="table-responsive">
-			<table id="table_id" class="table table-bordered table-striped table-hover">
-				<thead>
-					<tr>
-						<th>ID Barang Keluar</th>
-						<th>ID Barang</th>
-						<th>Tanggal Keluar</th>
-						<th>Jumlah Keluar</th>
-						<th>Keterangan</th>
-						<th>Satuan</th>
-						<th>ID Ruang</th>
-						<th>Aksi</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php
-					foreach($t_barang_keluar as $tbrangkluar)
-					{?>
-						<tr>
-							<td><?php echo $tbrangkluar->id_barang_keluar ?></td>
-							<td><?php echo $tbrangkluar->id_barang ?></td>
-							<td><?php echo $tbrangkluar->tgl_keluar ?></td>
-							<td><?php echo $tbrangkluar->jumlah_keluar ?></td>
-							<td><?php echo $tbrangkluar->keterangan ?></td>
-							<td><?php echo $tbrangkluar->satuan ?></td>
-							<td><?php echo $tbrangkluar->id_ruang ?></td>
-							<td>
-								<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $tbrangkluar->id;?>)">Edit</button>
-								<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tbrangkluar->id_barang_keluar;?>&quot;)">Detail</button>
-								<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $tbrangkluar->id_barang_keluar;?>&quot;)">Hapus</button>
-							</td>
-						</tr>
-					<?php } ?>
-				</tbody>
-			</table>
-		</div>
-		</div>
-	</div>
+	<h1 class="text-center">Data Barang Keluar</h1><br>
+	<div id="tmpModal"></div>
+	<?=$this->session->flashdata('notif')?>
+	<div class="table-responsive">
+	<table id="table_id" class="table table-bordered table-striped table-hover">
+		<thead>
+			<tr>
+				<th>ID Barang Keluar</th>
+				<th>ID Barang</th>
+				<th>Tanggal Keluar</th>
+				<th>Jumlah Keluar</th>
+				<th>Keterangan</th>
+				<th>Satuan</th>
+				<th>ID Ruang</th>
+				<th>Aksi</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+			foreach($t_barang_keluar as $tbrangkluar)
+			{?>
+				<tr>
+					<td><?php echo $tbrangkluar->id_barang_keluar ?></td>
+					<td><?php echo $tbrangkluar->id_barang ?></td>
+					<td><?php echo $tbrangkluar->tgl_keluar ?></td>
+					<td><?php echo $tbrangkluar->jumlah_keluar ?></td>
+					<td><?php echo $tbrangkluar->keterangan ?></td>
+					<td><?php echo $tbrangkluar->satuan ?></td>
+					<td><?php echo $tbrangkluar->id_ruang ?></td>
+					<td>
+						<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $tbrangkluar->id;?>)">Edit</button>
+						<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tbrangkluar->id_barang_keluar;?>&quot;)">Detail</button>
+						<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $tbrangkluar->id_barang_keluar;?>&quot;)">Hapus</button>
+					</td>
+				</tr>
+			<?php } ?>
+		</tbody>
+	</table>
+</div>
 
 	<!-- Bootstrap modal Edit and Add -->
 	  <div class="modal fade" id="modal_form" role="dialog">

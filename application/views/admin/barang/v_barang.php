@@ -4,52 +4,49 @@
 	<title>Sarana dan Prasarana</title>
 </head>
 <body>
-	<div class="container">
-		<div class="kecilna" style="width: 95%">
-			<h1 class="text-center">Data Barang</h1>
-			<div id="tmpModal"></div>
-			<?=$this->session->flashdata('notif')?>
-			<button class="btn btn-success" onclick="tambah_barang()"><i class="glyphicon glyphicon-plus"></i> Input data barang</button>
-			<br />
-    		<br />
-			<div class="table-responsive">
-				<table id="table_id" class="table table-bordered table-striped table-hover">
-					<thead>
-						<tr>
-							<th>ID Barang</th>
-							<th>Nama Barang</th>
-							<th>Spesifikasi</th>
-							<th>Merk</th>
-							<th>Jumlah</th>
-							<th>Harga</th>
-							<th>Satuan</th>
-							<th>Aksi</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php
-						foreach($t_barang as $tbrang)
-						{?>
-							<tr>
-								<td><?php echo $tbrang->id_barang ?></td>
-								<td><?php echo $tbrang->nama_barang ?></td>
-								<td><?php echo $tbrang->spesifikasi ?></td>
-								<td><?php echo $tbrang->merk ?></td>
-								<td><?php echo $tbrang->jumlah ?></td>
-								<td><?php echo $tbrang->harga ?></td>
-								<td><?php echo $tbrang->satuan ?></td>
-								<td>
-									<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $tbrang->id;?>)">Edit</button>
-									<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tbrang->id_barang;?>&quot;)">Detail</button>
-									<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $tbrang->id_barang;?>&quot;)">Hapus</button>
-								</td>
-							</tr>
-						<?php } ?>
-					</tbody>
-				</table>
-			</div>
-		</div>
+	<?=$this->session->flashdata('notif')?>
+	<h1 class="text-center">Data Barang</h1>
+	<div id="tmpModal"></div>
+	<button class="btn btn-success" onclick="tambah_barang()"><i class="glyphicon glyphicon-plus"></i> Input data barang</button>
+	<br />
+	<br />
+	<div class="table-responsive">
+		<table id="table_id" class="table table-bordered table-striped table-hover">
+			<thead>
+				<tr>
+					<th>ID Barang</th>
+					<th>Nama Barang</th>
+					<th>Spesifikasi</th>
+					<th>Merk</th>
+					<th>Jumlah</th>
+					<th>Harga</th>
+					<th>Satuan</th>
+					<th>Aksi</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				foreach($t_barang as $tbrang)
+				{?>
+					<tr>
+						<td><?php echo $tbrang->id_barang ?></td>
+						<td><?php echo $tbrang->nama_barang ?></td>
+						<td><?php echo $tbrang->spesifikasi ?></td>
+						<td><?php echo $tbrang->merk ?></td>
+						<td><?php echo $tbrang->jumlah ?></td>
+						<td><?php echo $tbrang->harga ?></td>
+						<td><?php echo $tbrang->satuan ?></td>
+						<td>
+							<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $tbrang->id;?>)">Edit</button>
+							<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tbrang->id_barang;?>&quot;)">Detail</button>
+							<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $tbrang->id_barang;?>&quot;)">Hapus</button>
+						</td>
+					</tr>
+				<?php } ?>
+			</tbody>
+		</table>
 	</div>
+
 
 	<!-- Bootstrap modal Edit and Add -->
 	  <div class="modal fade" id="modal_form" role="dialog">

@@ -13,43 +13,49 @@ class Dashboard extends My_Controller
 
 	public function index()
 	{
-		$this->layoutGuest('welcome');
+		$data['side']='guest/tampil/side';
+		$data['content']='welcome';
+		$this->load->view('guest/tampil/main', $data);
 	}
 
 	public function ndeleng_barang()
 	{
 		$data['t_barang'] = $this->modelku->tampil_data('t_barang')->result();
-		$this->layoutGuest('guest/barang/v_barang', $data);
+		$data['side']='guest/tampil/side';
+		$data['content']='guest/barang/v_barang';
+		$this->load->view('guest/tampil/main', $data);
 	}
 
 	public function ndeleng_barangMasuk()
 	{
-		$datane['t_barang_masuk'] = $this->modelku->tampil_data('t_barang_masuk')->result();
-		$this->layoutGuest('guest/barang/l_barang_masuk', $datane);
+		$data['t_barang_masuk'] = $this->modelku->tampil_data('t_barang_masuk')->result();
+		$data['side']='guest/tampil/side';
+		$data['content']='guest/barang/l_barang_masuk';
+		$this->load->view('guest/tampil/main', $data);
 	}
 
 	public function ndeleng_barang_keluar()
 	{
 		$data['t_barang_keluar'] = $this->modelku->tampil_data('t_barang_keluar')->result();
-		$this->layoutGuest('guest/barang/v_barang_keluar', $data);
-	}
-
-	public function ndeleng_barang_pinjam()
-	{
-		$data['t_peminjaman'] = $this->modelku->tampil_data('t_peminjaman')->result();
-		$this->layoutGuest('guest/barang/v_t_peminjaman', $data);
+		$data['side']='guest/tampil/side';
+		$data['content']='guest/barang/v_barang_keluar';
+		$this->load->view('guest/tampil/main', $data);
 	}
 
 	public function ndeleng_data_pengembalian()
 	{
 		$data['t_pengembalian'] = $this->modelku->tampil_data('t_pengembalian')->result();
-		$this->layoutGuest('guest/barang/v_data_pengembalian', $data);
+		$data['side']='guest/tampil/side';
+		$data['content']='guest/barang/v_data_pengembalian';
+		$this->load->view('guest/tampil/main', $data);
 	}
 
 	public function ndeleng_ruang()
 	{
 		$data['t_ruang'] = $this->modelku->tampil_data('t_ruang')->result();
-		$this->layoutGuest('guest/ruang/v_ruang', $data);
+		$data['side']='guest/tampil/side';
+		$data['content']='guest/ruang/v_ruang';
+		$this->load->view('guest/tampil/main', $data);
 	}
 
 	public function nampil_detail($id)
@@ -105,6 +111,14 @@ class Dashboard extends My_Controller
 		$this->load->view('guest/barang/detail_pngmblian', $data);
 	}
 
+	public function ndeleng_barang_pinjam()
+	{
+		$data['t_peminjaman'] = $this->modelku->tampil_data('t_peminjaman')->result();
+		$data['side']='guest/tampil/side';
+		$data['content']='guest/barang/v_t_peminjaman';
+		$this->load->view('guest/tampil/main', $data);
+	}
+
 	public function nampil_detailBrangRuang($id)
 	{
 		$where = array
@@ -117,21 +131,29 @@ class Dashboard extends My_Controller
 
 	public function nginput_barang_pinjam()
 	{
-		$this->layoutGuest('guest/barang/v_peminjaman');
+		$data['side']='guest/tampil/side';
+		$data['content']='guest/barang/v_peminjaman';
+		$this->load->view('guest/tampil/main', $data);
 	}
 
 	public function nginput_barang_pengembalian()
 	{
-		$this->layoutGuest('guest/barang/v_pengembalian');
+		$data['side']='guest/tampil/side';
+		$data['content']='guest/barang/v_pengembalian';
+		$this->load->view('guest/tampil/main', $data);
 	}
 
 	public function nginput_barang_pengembalianRusak()
 	{
-		$this->layoutGuest('guest/barang/v_pengembalian_barangRusak');
+		$data['side']='guest/tampil/side';
+		$data['content']='guest/barang/v_pengembalian_barangRusak';
+		$this->load->view('guest/tampil/main', $data);
 	}
 
 	public function nginput_barang_pengembalianHilang()
 	{
-		$this->layoutGuest('guest/barang/v_pengembalian_barangHilang');
+		$data['side']='guest/tampil/side';
+		$data['content']='guest/barang/v_pengembalian_barangHilang';
+		$this->load->view('guest/tampil/main', $data);
 	}
 }

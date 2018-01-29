@@ -24,75 +24,95 @@ class Member extends My_Controller
 					'error' => '',
 					'username' => $this->session->userdata('username')
 				);
-		$this->layoutMem('welcome', $data);
+		
+		$data['side']='member/tampil/side';
+		$data['content']='welcome';
+		$this->load->view('member/tampil/main', $data);
 	}
 
 	public function ndeleng_barang()
 	{
 		$data['t_barang'] = $this->modelku->tampil_data('t_barang')->result();
-		$this->layoutMem('member/barang/v_barang', $data);
+		$data['side']='member/tampil/side';
+		$data['content']='member/barang/v_barang';
+		$this->load->view('member/tampil/main', $data);
 	}
 
 	public function ndeleng_barang_masuk()
 	{
 		$data['t_barang_masuk'] = $this->modelku->tampil_data('t_barang_masuk')->result();
-		$this->layoutMem('member/barang/v_barang_masuk', $data);
+		$data['side']='member/tampil/side';
+		$data['content']='member/barang/v_barang_masuk';
+		$this->load->view('member/tampil/main', $data);
 	}
 
 	public function ndeleng_barang_keluar()
 	{
 		$data['t_barang_keluar'] = $this->modelku->tampil_data('t_barang_keluar')->result();
-		$this->layoutMem('member/barang/v_barang_keluar', $data);
+		$data['side']='member/tampil/side';
+		$data['content']='member/barang/v_barang_keluar';
+		$this->load->view('member/tampil/main', $data);
 	}
 
 	public function ndeleng_barang_dipinjam()
 	{
 		$where = array('peminjam' => $_SESSION['id']);
 		$data['t_peminjaman'] = $this->modelku->tampil_pinjam($where, 't_peminjaman')->result();
-		$this->layoutMem('member/barang/v_barang_pinjaman', $data);
+		$data['side']='member/tampil/side';
+		$data['content']='member/barang/v_barang_pinjaman';
+		$this->load->view('member/tampil/main', $data);
 	}
 
 	public function ndeleng_barang_rusak()
 	{
 		$data['t_kerusakan'] = $this->modelku->tampil_data('t_kerusakan')->result();
-		$this->layoutMem('member/barang/v_t_kerusakan', $data);
+		$data['side']='member/tampil/side';
+		$data['content']='member/barang/v_t_kerusakan';
+		$this->load->view('member/tampil/main', $data);
 	}
 
 	public function ndeleng_barang_ilang()
 	{
 		$data['t_kehilangan'] = $this->modelku->tampil_data('t_kehilangan')->result();
-		$this->layoutMem('member/barang/v_t_kehilangan', $data);
+		$data['side']='member/tampil/side';
+		$data['content']='member/barang/v_t_kehilangan';
+		$this->load->view('member/tampil/main', $data);
 	}
 
 	public function nginput_barang_pinjam()
 	{
-		$this->layoutMem('member/barang/v_peminjaman');
-	}
-
-	public function barang_pengembalian()
-	{
-		$this->layoutMem('member/barang/v_kembali_barang');
+		$data['side']='member/tampil/side';
+		$data['content']='member/barang/v_peminjaman';
+		$this->load->view('member/tampil/main', $data);
 	}
 
 	public function nginput_barang_pengembalian()
 	{
-		$this->layoutMem('member/barang/v_pengembalian');
+		$data['side']='member/tampil/side';
+		$data['content']='member/barang/v_pengembalian';
+		$this->load->view('member/tampil/main', $data);
 	}
 
 	public function nginput_barang_pengembalianRusak()
 	{
-		$this->layoutMem('member/barang/v_kembalian_barangRusak');
+		$data['side']='member/tampil/side';
+		$data['content']='member/barang/v_kembalian_barangRusak';
+		$this->load->view('member/tampil/main', $data);
 	}
 
 	public function nginput_barang_pengembalianHilang()
 	{
-		$this->layoutMem('member/barang/v_pengembalian_barangHilang');
+		$data['side']='member/tampil/side';
+		$data['content']='member/barang/v_pengembalian_barangHilang';
+		$this->load->view('member/tampil/main', $data);
 	}
 
 	public function ndeleng_ruang()
 	{
 		$data['t_ruang'] = $this->modelku->tampil_data('t_ruang')->result();
-		$this->layoutMem('member/ruang/v_ruang', $data);
+		$data['side']='member/tampil/side';
+		$data['content']='member/ruang/v_ruang';
+		$this->load->view('member/tampil/main', $data);
 	}
 
 	public function nampil_detail($id)

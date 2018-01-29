@@ -23,7 +23,10 @@ class Admin extends My_Controller
 					'error' => '',
 					'username' => $this->session->userdata('username')
 				);
-		$this->layout('welcome', $data);
+		
+		$data['side']='admin/tampil/side';
+		$data['content']='welcome';
+		$this->load->view('admin/tampil/main', $data);
 	}
 
 	public function njajal()
@@ -130,92 +133,116 @@ class Admin extends My_Controller
 	public function ndeleng_barang()
 	{
 		$data['t_barang'] = $this->modelku->tampil_data('t_barang')->result();
-		$this->layout('admin/barang/v_barang', $data);
+		$data['side']='admin/tampil/side';
+		$data['content']='admin/barang/v_barang';
+		$this->load->view('admin/tampil/main', $data);
 	}
 
 	public function ndeleng_barangMasuk()
 	{
-		$datane['t_barang_masuk'] = $this->modelku->tampil_data('t_barang_masuk')->result();
-		$this->layout('admin/barang/l_barang_masuk', $datane);
+		$data['t_barang_masuk'] = $this->modelku->tampil_data('t_barang_masuk')->result();
+		$data['side']='admin/tampil/side';
+		$data['content']='admin/barang/l_barang_masuk';
+		$this->load->view('admin/tampil/main', $data);
 	}
 
 	public function ndeleng_barang_keluar()
 	{
 		$data['t_barang_keluar'] = $this->modelku->tampil_data('t_barang_keluar')->result();
-		$data['detail_barang'] = $this->modelku->tampil_data('detail_barang')->result();
-		$this->layout('admin/barang/v_barang_keluar', $data);
+		$data['side']='admin/tampil/side';
+		$data['content']='admin/barang/v_barang_keluar';
+		$this->load->view('admin/tampil/main', $data);
 	}
 
 	public function ndeleng_barang_ilang()
 	{
 		$data['t_kehilangan'] = $this->modelku->tampil_data('t_kehilangan')->result();
-		$data['detail_barang'] = $this->modelku->tampil_data('detail_barang')->result();
-		$this->layout('admin/barang/v_t_kehilangan', $data);
+		$data['side']='admin/tampil/side';
+		$data['content']='admin/barang/v_t_kehilangan';
+		$this->load->view('admin/tampil/main', $data);
 	}
 
 	public function ndeleng_barang_rusak()
 	{
 		$data['t_kerusakan'] = $this->modelku->tampil_data('t_kerusakan')->result();
-		$data['detail_barang'] = $this->modelku->tampil_data('detail_barang')->result();
-		$this->layout('admin/barang/v_t_kerusakan', $data);
+		$data['side']='admin/tampil/side';
+		$data['content']='admin/barang/v_t_kerusakan';
+		$this->load->view('admin/tampil/main', $data);
 	}
 
 	public function ndeleng_barang_pinjam()
 	{
 		$data['t_peminjaman'] = $this->modelku->tampil_data('t_peminjaman')->result();
-		$data['detail_barang'] = $this->modelku->tampil_data('detail_barang')->result();
-		$this->layout('admin/barang/v_t_peminjaman', $data);
+		$data['side']='admin/tampil/side';
+		$data['content']='admin/barang/v_t_peminjaman';
+		$this->load->view('admin/tampil/main', $data);
 	}
 
 	public function ndeleng_histori_pinjam()
 	{
 		$data['t_histori_pinjam'] = $this->modelku->tampil_data('t_histori_pinjam')->result();
-		$data['detail_histori_pinjam'] = $this->modelku->tampil_data('detail_histori_pinjam')->result();
-		$this->layout('admin/barang/v_histori_pinjam', $data);
+		$data['side']='admin/tampil/side';
+		$data['content']='admin/barang/v_histori_pinjam';
+		$this->load->view('admin/tampil/main', $data);
 	}
 
 	public function ndeleng_data_pengembalian()
 	{
 		$data['t_pengembalian'] = $this->modelku->tampil_data('t_pengembalian')->result();
-		$data['detail_pengembalian'] = $this->modelku->tampil_data('detail_pengembalian')->result();
-		$this->layout('admin/barang/v_data_pengembalian', $data);
+		$data['side']='admin/tampil/side';
+		$data['content']='admin/barang/v_data_pengembalian';
+		$this->load->view('admin/tampil/main', $data);
 	}
 
 	public function ndeleng_ruang()
 	{
 		$data['t_ruang'] = $this->modelku->tampil_data('t_ruang')->result();
-		$this->layout('admin/ruang/v_ruang', $data);
+		$data['side']='admin/tampil/side';
+		$data['content']='admin/ruang/v_ruang';
+		$this->load->view('admin/tampil/main', $data);
 	}
 
 	public function ndeleng_user()
 	{
 		$data['t_user'] = $this->modelku->tampil_data('t_user')->result();
-		$this->layout('admin/user/v_user', $data);
+		$data['side']='admin/tampil/side';
+		$data['content']='admin/user/v_user';
+		$this->load->view('admin/tampil/main', $data);
 	}
 
 	public function input_barang_masuk()
 	{
-		$this->layout('admin/barang/v_barang_masuk');
+		$data['side']='admin/tampil/side';
+		$data['content']='admin/barang/v_barang_masuk';
+		$this->load->view('admin/tampil/main', $data);
 	}
 
 	public function nginput_barang_pinjam()
 	{
-		$this->layout('admin/barang/v_peminjaman');
+		$data['side']='admin/tampil/side';
+		$data['content']='admin/barang/v_peminjaman';
+		$this->load->view('admin/tampil/main', $data);
 	}
 
 	public function nginput_barang_pengembalian()
 	{
-		$this->layout('admin/barang/v_pengembalian');
+		$data['side']='admin/tampil/side';
+		$data['content']='admin/barang/v_pengembalian';
+		$this->load->view('admin/tampil/main', $data);
 	}
 
 	public function nginput_barang_pengembalianRusak()
 	{
-		$this->layout('admin/barang/v_pengembalian_barangRusak');
+		$data['side']='admin/tampil/side';
+		$data['content']='admin/barang/v_pengembalian_barangRusak';
+		$this->load->view('admin/tampil/main', $data);
 	}
 
 	public function nginput_barang_pengembalianHilang()
 	{
-		$this->layout('admin/barang/v_pengembalian_barangHilang');
+		$data['side']='admin/tampil/side';
+		$data['content']='admin/barang/v_pengembalian_barangHilang';
+		$this->load->view('admin/tampil/main', $data);	
 	}
 	
 	public function logout() 

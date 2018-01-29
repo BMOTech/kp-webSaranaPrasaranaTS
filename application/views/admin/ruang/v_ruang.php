@@ -4,44 +4,40 @@
 	<title>Sarana dan Prasarana</title>
 </head>
 <body>
-	<div class="container">
-		<div class="kecilna" style="width: 95%">
-			<h1 class="text-center">Data Ruangan</h1><br>
-			<div id="tmpModal"></div>
-			<?=$this->session->flashdata('notif')?>
-			<button class="btn btn-success" onclick="tambah_ruang()"><i class="glyphicon glyphicon-plus"></i> Tambah Ruangan</button>
-			<br />
-    		<br />
-			<div class="table-responsive">
-			<table id="table_id" class="table table-bordered table-striped table-hover">
-				<thead>
-					<tr>
-						<th>ID Ruang</th>
-						<th>Nama Ruang</th>
-						<th>Keterangan</th>
-						<th>Aksi</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php
-					foreach($t_ruang as $truang)
-					{?>
-						<tr>
-							<td><?php echo $truang->id_ruang ?></td>
-							<td><?php echo $truang->nama_ruang ?></td>
-							<td><?php echo $truang->keterangan ?></td>
-							<td>
-								<button class="btn btn-warning" onclick="ngedit_ruang(<?php echo $truang->id;?>)">Edit</button>
-								<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $truang->id_ruang;?>&quot;)">Lihat Barang</button>
-								<button class="btn btn-danger" onclick="ngapus_ruang(&quot;<?php echo $truang->id_ruang;?>&quot;)">Hapus</button>
-							</td>
-						</tr>
-					<?php } ?>
-				</tbody>
-			</table>
-		</div>
-		</div>
-	</div>
+	<h1 class="text-center">Data Ruangan</h1><br>
+	<div id="tmpModal"></div>
+	<?=$this->session->flashdata('notif')?>
+	<button class="btn btn-success" onclick="tambah_ruang()"><i class="glyphicon glyphicon-plus"></i> Tambah Ruangan</button>
+	<br />
+	<br />
+	<div class="table-responsive">
+	<table id="table_id" class="table table-bordered table-striped table-hover">
+		<thead>
+			<tr>
+				<th>ID Ruang</th>
+				<th>Nama Ruang</th>
+				<th>Keterangan</th>
+				<th>Aksi</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+			foreach($t_ruang as $truang)
+			{?>
+				<tr>
+					<td><?php echo $truang->id_ruang ?></td>
+					<td><?php echo $truang->nama_ruang ?></td>
+					<td><?php echo $truang->keterangan ?></td>
+					<td>
+						<button class="btn btn-warning" onclick="ngedit_ruang(<?php echo $truang->id;?>)">Edit</button>
+						<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $truang->id_ruang;?>&quot;)">Lihat Barang</button>
+						<button class="btn btn-danger" onclick="ngapus_ruang(&quot;<?php echo $truang->id_ruang;?>&quot;)">Hapus</button>
+					</td>
+				</tr>
+			<?php } ?>
+		</tbody>
+	</table>
+</div>
 
 	<!-- Bootstrap modal Edit and Add -->
 	  <div class="modal fade" id="modal_form" role="dialog">

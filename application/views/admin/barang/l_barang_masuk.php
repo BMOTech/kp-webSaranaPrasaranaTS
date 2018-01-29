@@ -4,47 +4,43 @@
 	<title>Sarana dan Prasarana</title>
 </head>
 <body>
-	<div class="container">
-		<div class="kecilna" style="width: 95%">
-			<h1 class="text-center">Data Barang Masuk</h1><br>
-			<div id="tmpModal"></div>
-			<?=$this->session->flashdata('notif')?>
-			<div class="table-responsive">
-			<table id="table_id" class="table table-bordered table-striped table-hover">
-				<thead>
-					<tr>
-						<th>ID Barang Masuk</th>
-						<th>ID Barang</th>
-						<th>Tanggal Masuk</th>
-						<th>Jumlah Masuk</th>
-						<th>ID Ruang</th>
-						<th>Satuan</th>
-						<th>Aksi</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php
-					foreach($t_barang_masuk as $tbrang)
-					{?>
-						<tr>
-							<td><?php echo $tbrang->id_barang_masuk ?></td>
-							<td><?php echo $tbrang->id_barang ?></td>
-							<td><?php echo $tbrang->tgl_masuk ?></td>
-							<td><?php echo $tbrang->jumlah_masuk ?></td>
-							<td><?php echo $tbrang->id_ruang ?></td>
-							<td><?php echo $tbrang->satuan ?></td>
-							<td>
-								<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $tbrang->id;?>)">Edit</button>
-								<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tbrang->id_barang;?>&quot;)">Detail</button>
-								<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $tbrang->id_barang_masuk;?>&quot;)">Hapus</button>
-							</td>
-						</tr>
-					<?php } ?>
-				</tbody>
-			</table>
-		</div>
-		</div>
-	</div>
+	<h1 class="text-center">Data Barang Masuk</h1><br>
+	<div id="tmpModal"></div>
+	<?=$this->session->flashdata('notif')?>
+	<div class="table-responsive">
+	<table id="table_id" class="table table-bordered table-striped table-hover">
+		<thead>
+			<tr>
+				<th>ID Barang Masuk</th>
+				<th>ID Barang</th>
+				<th>Tanggal Masuk</th>
+				<th>Jumlah Masuk</th>
+				<th>ID Ruang</th>
+				<th>Satuan</th>
+				<th>Aksi</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+			foreach($t_barang_masuk as $tbrang)
+			{?>
+				<tr>
+					<td><?php echo $tbrang->id_barang_masuk ?></td>
+					<td><?php echo $tbrang->id_barang ?></td>
+					<td><?php echo $tbrang->tgl_masuk ?></td>
+					<td><?php echo $tbrang->jumlah_masuk ?></td>
+					<td><?php echo $tbrang->id_ruang ?></td>
+					<td><?php echo $tbrang->satuan ?></td>
+					<td>
+						<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $tbrang->id;?>)">Edit</button>
+						<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tbrang->id_barang;?>&quot;)">Detail</button>
+						<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $tbrang->id_barang_masuk;?>&quot;)">Hapus</button>
+					</td>
+				</tr>
+			<?php } ?>
+		</tbody>
+	</table>
+</div>
 
 	<!-- Bootstrap modal Edit and Add -->
 	  <div class="modal fade" id="modal_form" role="dialog">

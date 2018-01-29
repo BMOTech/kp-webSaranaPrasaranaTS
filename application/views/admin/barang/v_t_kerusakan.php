@@ -4,49 +4,45 @@
 	<title>Barang Hilang</title>
 </head>
 <body>
-	<div class="container">
-		<div class="kecilna" style="width: 95%">
-		<h1 class="text-center">Data Barang Rusak</h1>
-		<div id="tmpModal"></div>
-		<?=$this->session->flashdata('notif')?>
-		<button class="btn btn-success" onclick="tambah_barang()"><i class="glyphicon glyphicon-plus"></i> Input data barang rusak</button>
-		<br />
-		<br />
-			<div class="table-responsive">
-			<table id="table_id" class="table table-bordered table-striped table-hover">
-				<thead>
+	<h1 class="text-center">Data Barang Rusak</h1>
+	<div id="tmpModal"></div>
+	<?=$this->session->flashdata('notif')?>
+	<button class="btn btn-success" onclick="tambah_barang()"><i class="glyphicon glyphicon-plus"></i> Input data barang rusak</button>
+	<br />
+	<br />
+		<div class="table-responsive">
+		<table id="table_id" class="table table-bordered table-striped table-hover">
+			<thead>
+				<tr>
+					<th>ID Barang Keluar</th>
+					<th>ID Barang</th>
+					<th>Tanggal Rusak</th>
+					<th>Jumlah Rusak</th>
+					<th>Penanggung Jawab</th>
+					<th>Tindakan</th>
+					<th>Aksi</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				foreach($t_kerusakan as $trusak)
+				{?>
 					<tr>
-						<th>ID Barang Keluar</th>
-						<th>ID Barang</th>
-						<th>Tanggal Rusak</th>
-						<th>Jumlah Rusak</th>
-						<th>Penanggung Jawab</th>
-						<th>Tindakan</th>
-						<th>Aksi</th>
+						<td><?php echo $trusak->id_barang_keluar ?></td>
+						<td><?php echo $trusak->id_barang ?></td>
+						<td><?php echo $trusak->tgl_rusak?></td>
+						<td><?php echo $trusak->jml_rusak ?></td>
+						<td><?php echo $trusak->penanggung_jawab ?></td>
+						<td><?php echo $trusak->tindakan ?></td>
+						<td>
+							<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $trusak->id;?>)">Edit</button>
+							<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $trusak->id_barang_keluar;?>&quot;)">Detail</button>
+							<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $trusak->id_barang_keluar;?>&quot;)">Hapus</button>
+						</td>
 					</tr>
-				</thead>
-				<tbody>
-					<?php
-					foreach($t_kerusakan as $trusak)
-					{?>
-						<tr>
-							<td><?php echo $trusak->id_barang_keluar ?></td>
-							<td><?php echo $trusak->id_barang ?></td>
-							<td><?php echo $trusak->tgl_rusak?></td>
-							<td><?php echo $trusak->jml_rusak ?></td>
-							<td><?php echo $trusak->penanggung_jawab ?></td>
-							<td><?php echo $trusak->tindakan ?></td>
-							<td>
-								<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $trusak->id;?>)">Edit</button>
-								<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $trusak->id_barang_keluar;?>&quot;)">Detail</button>
-								<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $trusak->id_barang_keluar;?>&quot;)">Hapus</button>
-							</td>
-						</tr>
-					<?php } ?>
-				</tbody>
-			</table>
-		</div>
-		</div>
+				<?php } ?>
+			</tbody>
+		</table>
 	</div>
 
 	<!-- Bootstrap modal Edit and Add -->
