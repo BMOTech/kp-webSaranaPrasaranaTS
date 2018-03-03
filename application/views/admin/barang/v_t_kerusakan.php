@@ -4,16 +4,18 @@
 	<title>Barang Hilang</title>
 </head>
 <body>
+	<?=$this->session->flashdata('notif')?>
 	<h1 class="text-center">Data Barang Rusak</h1>
 	<div id="tmpModal"></div>
-	<?=$this->session->flashdata('notif')?>
 	<button class="btn btn-success" onclick="tambah_barang()"><i class="glyphicon glyphicon-plus"></i> Input data barang rusak</button>
 	<br />
 	<br />
 		<div class="table-responsive">
+		<form action="<?php echo base_url('admin/barang/barang/hapusIdBarangRsk') ?>" method="post" id="delete">
 		<table id="table_id" class="table table-bordered table-striped table-hover">
 			<thead>
 				<tr>
+					<th><input type="checkbox" name="ckall" id="ckall"></th>
 					<th>ID Barang Keluar</th>
 					<th>ID Barang</th>
 					<th>Tanggal Rusak</th>
@@ -28,6 +30,7 @@
 				foreach($t_kerusakan as $trusak)
 				{?>
 					<tr>
+						<td><input type="checkbox" name="ckbdelete[]" value="<?php echo $trusak->id_barang_keluar; ?>"></td>
 						<td><?php echo $trusak->id_barang_keluar ?></td>
 						<td><?php echo $trusak->id_barang ?></td>
 						<td><?php echo $trusak->tgl_rusak?></td>
@@ -35,14 +38,16 @@
 						<td><?php echo $trusak->penanggung_jawab ?></td>
 						<td><?php echo $trusak->tindakan ?></td>
 						<td>
-							<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $trusak->id;?>)">Edit</button>
-							<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $trusak->id_barang_keluar;?>&quot;)">Detail</button>
-							<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $trusak->id_barang_keluar;?>&quot;)">Hapus</button>
+							<button type="button" class="btn btn-warning" onclick="ngedit_barang(<?php echo $trusak->id;?>)"><i class="glyphicon glyphicon-edit"></i></button>
+							<button type="button" class="btn btn-info" onclick="detail_barang(&quot;<?php echo $trusak->id_barang_keluar;?>&quot;)"><i class="glyphicon glyphicon-info-sign"></i></button>
+							<button type="button" class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $trusak->id_barang_keluar;?>&quot;)"><i class="glyphicon glyphicon-trash"></i></button>
 						</td>
 					</tr>
 				<?php } ?>
 			</tbody>
 		</table>
+		<button type="button" class="btn btn-danger" onclick="ngapusper_barang()">Hapus</button><br><br>
+	</form>
 	</div>
 
 	<!-- Bootstrap modal Edit and Add -->
@@ -67,10 +72,12 @@
 	              <label class="control-label col-md-3">ID Barang</label>
 	              <div class="col-md-9">
 	                <select name="id_barang" id="id_barang" class="form-control">
-                                <?php $idBrang = $this->modelku->select_idBrang() ?>
-                                <?php foreach($idBrang->result() as $idBr){ ?>
-                                    <option value="<?php echo $idBr->id_barang?>"><?php echo $idBr->id_barang?></option>
-                                <?php } ?>
+                        <?php 
+                            foreach($idbarang as $barang)
+                            { 
+                              echo '<option value="'.$barang->id_barang.'">'.$barang->id_barang.'</option>';
+                            }
+                        ?>
                     </select required>
 	              </div>
 	            </div>
@@ -83,7 +90,7 @@
 	            <div class="form-group">
 	              <label class="control-label col-md-3">Jumlah Rusak</label>
 	              <div class="col-md-9">
-					<input name="jml_rusak" placeholder="Jumlah Rusak" class="form-control" type="number">
+					<input name="jml_rusak" placeholder="Jumlah Rusak" class="form-control" type="number" min="0">
 	              </div>
 	            </div>
 				<div class="form-group">
@@ -102,17 +109,22 @@
 				<div class="form-group" id="satuan">
 					<label class="control-label col-md-3">Satuan</label>
 					<div class="col-md-9">
-						<input name="satuan" placeholder="Satuan" class="form-control" type="text">
+						<select name="satuan" placeholder="Satuan" class="form-control">
+							<option value="Unit">Unit</option>
+							<option value="Buah">Buah</option>
+						</select>
 					</div>
 				</div>
 				<div class="form-group" id="id_ruang">
 					<label class="control-label col-md-3">ID Ruang</label>
 					<div class="col-md-9">
 						<select name="id_ruang" class="form-control">
-                            <?php $idRuang = $this->modelku->select_idR() ?>
-                            <?php foreach($idRuang->result() as $idRu){ ?>
-                                <option value="<?php echo $idRu->id_ruang ?>"><?php echo $idRu->id_ruang ?></option>
-                            <?php } ?>
+                            <?php 
+	                            foreach($idruang as $ruang)
+	                            { 
+	                              echo '<option value="'.$ruang->id_ruang.'">'.$ruang->id_ruang.'</option>';
+	                            }
+	                        ?>
                         </select required>
 					</div>
 				</div>
@@ -288,6 +300,18 @@
 		      }
 		    }
 
+		    function ngapusper_barang()
+		    {
+
+		      if(confirm('Anda yakin akan menghapusnya ?'))
+		      {
+		      	$('#delete').submit();
+		      }
+		    }
+
+		    $("#ckall").click(function(){
+			    $('input:checkbox').not(this).prop('checked', this.checked);
+			});
 	  </script>
 
 </body>

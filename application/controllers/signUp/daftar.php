@@ -28,14 +28,13 @@ class Daftar extends CI_Controller
             }
             else
             {
-                redirect('error/index');
+                redirect('error');
             }
         }
 	}
 	public function index()
 	{
         $data = array('error' => '');
-        $this->load->view('content/v_header', $data);
         $this->load->view('signup/v_daftar', $data);
 	}
 
@@ -52,7 +51,7 @@ class Daftar extends CI_Controller
         		'min_length' => '%s minimal 3 karakter!'
         	)
     	);
-        $this->form_validation->set_rules('username', 'Username', 'required|max_length[10]|min_length[3]',
+        $this->form_validation->set_rules('username', 'Username', 'required|max_length[10]|min_length[3]|callback_uname_exists',
         	array
         	(
         		'required' => 'Field %s harus diisi!',
@@ -109,20 +108,31 @@ class Daftar extends CI_Controller
 			$phone = $this->input->post('phone');
 			$lain = $this->input->post('lain-lain');
 
-			$data = array
-			(
-				'fullname' => $nama,
-				'username' => $username,
-				'email' => $email,
-				'password' => $password,
-				'phone' => $phone,
-				'deskripsi' => $lain,
-				'level' => 'member'
-			);
+                $data = array
+                (
+                    'fullname' => $nama,
+                    'username' => $username,
+                    'email' => $email,
+                    'password' => $password,
+                    'phone' => $phone,
+                    'deskripsi' => $lain,
+                    'level' => 'Member'
+                );
 
-			$this->modelku->input_data($data, 't_user');
-            $this->session->set_flashdata('succesDaftar','<div class="alert alert-success" role="alert"> Selamat anda berhasil mendaftar! Silahkan login! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-			redirect('signUp/daftar/index');
+                $this->modelku->input_data($data, 't_user');
+                $this->session->set_flashdata('succesDaftar','<div class="alert alert-success" role="alert"> Selamat anda berhasil mendaftar! Silahkan login! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                redirect('signUp/daftar/index');
         }
 	}
+
+    public function uname_exists($key)
+    {
+        $exist = $this->modelku->unameExist($key);
+
+        if ($exist == true) 
+        {
+            $this->form_validation->set_message('uname_exists', 'Username sudah dipakai!');
+            return FALSE;
+        }
+    }
 }

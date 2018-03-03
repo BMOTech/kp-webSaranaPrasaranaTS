@@ -4,16 +4,18 @@
 	<title>Sarana dan Prasarana</title>
 </head>
 <body>
+	<?=$this->session->flashdata('notif')?>
 	<h1 class="text-center">Data Ruangan</h1><br>
 	<div id="tmpModal"></div>
-	<?=$this->session->flashdata('notif')?>
 	<button class="btn btn-success" onclick="tambah_ruang()"><i class="glyphicon glyphicon-plus"></i> Tambah Ruangan</button>
 	<br />
 	<br />
 	<div class="table-responsive">
+	<form action="<?php echo base_url('admin/barang/barang/hapusDataRuang') ?>" method="post" id="delete">
 	<table id="table_id" class="table table-bordered table-striped table-hover">
 		<thead>
 			<tr>
+				<th><input type="checkbox" name="ckall" id="ckall"></th>
 				<th>ID Ruang</th>
 				<th>Nama Ruang</th>
 				<th>Keterangan</th>
@@ -25,18 +27,25 @@
 			foreach($t_ruang as $truang)
 			{?>
 				<tr>
+					<td><input type="checkbox" name="ckbdelete[]" value="<?php echo $truang->id_ruang; ?>"></td>
 					<td><?php echo $truang->id_ruang ?></td>
 					<td><?php echo $truang->nama_ruang ?></td>
 					<td><?php echo $truang->keterangan ?></td>
 					<td>
-						<button class="btn btn-warning" onclick="ngedit_ruang(<?php echo $truang->id;?>)">Edit</button>
-						<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $truang->id_ruang;?>&quot;)">Lihat Barang</button>
-						<button class="btn btn-danger" onclick="ngapus_ruang(&quot;<?php echo $truang->id_ruang;?>&quot;)">Hapus</button>
+						<button type="button" class="btn btn-warning" onclick="ngedit_ruang(<?php echo $truang->id;?>)"><i class="glyphicon glyphicon-edit"></i></button>
+						<button type="button" class="btn btn-info" onclick="detail_barang(&quot;<?php echo $truang->id_ruang;?>&quot;)"><i class="glyphicon glyphicon-info-sign"></i></button>
+						<button type="button" class="btn btn-danger" onclick="ngapus_ruang(&quot;<?php echo $truang->id_ruang;?>&quot;)"><i class="glyphicon glyphicon-trash"></i></button>
 					</td>
 				</tr>
 			<?php } ?>
 		</tbody>
 	</table>
+	<table class="table table-bordered table-striped">
+		<tr>
+			<button class="btn btn-danger" onclick="ngapusper_barang()">Hapus</button>
+		</tr>
+	</table>
+</form>
 </div>
 
 	<!-- Bootstrap modal Edit and Add -->
@@ -194,6 +203,19 @@
 		      }
 		    }
 
+		    function ngapusper_barang()
+		    {
+
+		      if(confirm('Anda yakin akan menghapusnya ?'))
+		      {
+		      	$('#delete').submit();
+		      }
+		    }
+
+
+		    $("#ckall").click(function(){
+			    $('input:checkbox').not(this).prop('checked', this.checked);
+			});
 	  </script>
 
 </body>

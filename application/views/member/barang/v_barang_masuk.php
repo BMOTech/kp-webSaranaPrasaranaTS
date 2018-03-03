@@ -31,7 +31,7 @@
 								<td><?php echo $tbrangmsuk->jumlah_masuk ?></td>
 								<td><?php echo $tbrangmsuk->satuan ?></td>
 								<td>
-									<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tbrangmsuk->id_barang;?>&quot;)">Detail</button>
+									<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tbrangmsuk->id_barang_masuk;?>&quot;)">Detail</button>
 								</td>
 							</tr>
 						<?php } ?>

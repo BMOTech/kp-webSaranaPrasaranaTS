@@ -11,9 +11,11 @@
 	<br />
 	<br />
 	<div class="table-responsive">
+		<form action="<?php echo base_url('admin/barang/barang/hapusIdBarang') ?>" method="post" id="delete">
 		<table id="table_id" class="table table-bordered table-striped table-hover">
 			<thead>
 				<tr>
+					<th><input type="checkbox" name="ckall" id="ckall"></th>
 					<th>ID Barang</th>
 					<th>Nama Barang</th>
 					<th>Spesifikasi</th>
@@ -27,24 +29,30 @@
 			<tbody>
 				<?php
 				foreach($t_barang as $tbrang)
-				{?>
+				{
+					$harga = number_format($tbrang->harga, 0, ",", ".");
+				?>
 					<tr>
+						<td><input type="checkbox" name="ckbdelete[]" value="<?php echo $tbrang->id_barang; ?>"></td>
 						<td><?php echo $tbrang->id_barang ?></td>
 						<td><?php echo $tbrang->nama_barang ?></td>
 						<td><?php echo $tbrang->spesifikasi ?></td>
 						<td><?php echo $tbrang->merk ?></td>
 						<td><?php echo $tbrang->jumlah ?></td>
-						<td><?php echo $tbrang->harga ?></td>
+						<td>Rp. <?php echo $harga ?></td>
 						<td><?php echo $tbrang->satuan ?></td>
 						<td>
-							<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $tbrang->id;?>)">Edit</button>
-							<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tbrang->id_barang;?>&quot;)">Detail</button>
-							<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $tbrang->id_barang;?>&quot;)">Hapus</button>
+							<button type="button" class="btn btn-warning" onclick="ngedit_barang(<?php echo $tbrang->id;?>)"><i class="glyphicon glyphicon-edit"></i></button>
+							<button type="button" class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tbrang->id_barang;?>&quot;)"><i class="glyphicon glyphicon-info-sign"></i></button>
+							<button type="button" class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $tbrang->id_barang;?>&quot;)"><i class="glyphicon glyphicon-trash"></i></button>
 						</td>
 					</tr>
 				<?php } ?>
 			</tbody>
 		</table>
+		<button type="button" class="btn btn-danger" onclick="ngapusper_barang()">Hapus</button><br><br>
+		<p><i><b>Catatan:</b> Data ini adalah data barang yang saat ini tersedia di SMK TELKOM. Untuk menambah jumlah maka harus ada barang masuk terlebih dahulu. Silahkan klik Input Data Barang Masuk jika ada barang yang masuk untuk menambah data.</i></p>
+	</form>
 	</div>
 
 
@@ -69,19 +77,25 @@
 	            <div class="form-group">
 	              <label class="control-label col-md-3">Nama Barang</label>
 	              <div class="col-md-9">
-	                <input name="nama_barang" placeholder="Nama Barang" class="form-control" type="text" required="true">
+	                <input name="nama_barang" id="nama_barang" placeholder="Nama Barang" class="form-control" type="text" required="true">
 	              </div>
 	            </div>
 	            <div class="form-group">
 	              <label class="control-label col-md-3">Spesifikasi</label>
 	              <div class="col-md-9">
-	                <input name="spesifikasi" placeholder="Spesifikasi" class="form-control" type="text" required="true">
+	                <input name="spesifikasi" id="spesifikasi" placeholder="Spesifikasi" class="form-control" type="text" required="true">
 	              </div>
 	            </div>
 	            <div class="form-group">
 	              <label class="control-label col-md-3">Merk</label>
 	              <div class="col-md-9">
-					<input name="merk" placeholder="Merk" class="form-control" type="text" required="true">
+					<input name="merk" id="merk" placeholder="Merk" class="form-control" type="text" required="true">
+	              </div>
+	            </div>
+	            <div class="form-group jml">
+	              <label class="control-label col-md-3">Jumlah</label>
+	              <div class="col-md-9">
+					<input name="jumlah" id="jumlah" placeholder="Jumlah" class="form-control" type="number" required="true">
 	              </div>
 	            </div>
 				<div class="form-group">
@@ -94,7 +108,10 @@
 				<div class="form-group">
 					<label class="control-label col-md-3">Satuan</label>
 					<div class="col-md-9">
-						<input name="satuan" placeholder="Satuan" class="form-control" type="text" required="true">
+						<select name="satuan" id="satuan" placeholder="Satuan" class="form-control" required="true">
+							<option value="Unit">Unit</option>
+							<option value="Buah">Buah</option>
+						</select>
 					</div>
 				</div>
 	          </div>
@@ -118,14 +135,6 @@
 		    var save_method; //for save method string
 		    var table;
 
-		    document.getElementById("harga").onblur =function (){this.value = parseFloat(this.value.replace(/,/g, ""))
-                    .toFixed(2)
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                }
-
-            
-
             $('.btnModal').on('click',function(){
 			   var id = $(this).attr('data-id');
 			  	alert(id);
@@ -135,6 +144,7 @@
 		    {
 		      save_method = 'add';
 		      $('#form')[0].reset(); // reset form on modals
+		      $('.jml').hide();
 		      $('#modal_form').modal('show'); // show bootstrap modal
 		      $('.modal-title').text('Tambah Barang'); // Set Title to Bootstrap modal title
 		    }
@@ -185,7 +195,7 @@
 		    	var url;
 		    	if(save_method == 'add')
 		      	{
-		      		if($('#idbarang').val()=="" || $('#idbarang').val()==null)
+		      		if($('#idbarang').val()=="" || $('#idbarang').val()==null || $('#nama_barang').val()=="" || $('#nama_barang').val()==null || $('#spesifikasi').val()=="" || $('#spesifikasi').val()==null || $('#merk').val()=="" || $('#merk').val()==null || $('#harga').val()=="" || $('#harga').val()==null || $('#satuan').val()=="" || $('#satuan').val()==null)
 			      	{
 			        	alert("Gagal")
 			      	}
@@ -239,6 +249,19 @@
 
 		      }
 		    }
+
+		    function ngapusper_barang()
+		    {
+
+		      if(confirm('Anda yakin akan menghapusnya ?'))
+		      {
+		      	$('#delete').submit();
+		      }
+		    }
+
+		    $("#ckall").click(function(){
+			    $('input:checkbox').not(this).prop('checked', this.checked);
+			});
 
 	  </script>
 </body>

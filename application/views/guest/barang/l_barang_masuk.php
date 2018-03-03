@@ -5,7 +5,7 @@
 </head>
 <body>
 	<div class="container">
-		<div class="kecila" style="width: 95%">
+		<div class="kecilna" style="width: 95%">
 			<h1 class="text-center">Data Barang Masuk</h1><br>
 			<div id="tmpModal"></div>
 			<div class="table-responsive">
@@ -33,7 +33,7 @@
 								<td><?php echo $tbrang->id_ruang ?></td>
 								<td><?php echo $tbrang->satuan ?></td>
 								<td>
-									<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tbrang->id_barang;?>&quot;)">Detail</button>
+									<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tbrang->id_barang_masuk;?>&quot;)">Detail</button>
 								</td>
 							</tr>
 						<?php } ?>

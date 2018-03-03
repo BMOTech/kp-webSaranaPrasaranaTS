@@ -11,21 +11,9 @@
           <p><?php echo $this->session->userdata("fullname"); ?></p>
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
-      </div>
-      <!-- search form -->
-      <form action="#" method="get" class="sidebar-form">
-        <div class="input-group">
-          <input type="text" name="q" class="form-control" placeholder="Search...">
-              <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="glyphicon glyphicon-search"></i>
-                </button>
-              </span>
-        </div>
-      </form>
-      <!-- /.search form -->
+      </div><br>
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu">
-        <li class="header">MAIN NAVIGATION</li>
         <li>
           <a href="<?php echo base_url('member/member/ndeleng_barang') ?>">
             <i class="glyphicon glyphicon-list"></i> <span>Data Barang</span>
@@ -91,7 +79,14 @@
         </li>
         <li>
           <a href="<?php echo base_url('member\member/ndeleng_ruang') ?>">
-            <i class="glyphicon glyphicon-briefcase"></i> <span>Data Peminjaman</span>
+            <i class="glyphicon glyphicon-briefcase"></i> <span>Data Pengembalian</span>
+            <span class="pull-right-container">
+            </span>
+          </a>
+        </li>
+        <li>
+          <a href="<?php echo base_url('member/member/ndeleng_ganti_rugi') ?>">
+            <i class="glyphicon glyphicon-refresh"></i> <span>Ganti Rugi</span>
             <span class="pull-right-container">
             </span>
           </a>

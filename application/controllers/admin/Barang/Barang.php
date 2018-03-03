@@ -159,6 +159,14 @@ class Barang extends CI_Controller
 		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Data Berhasil dihapus <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
 	}
 
+	public function ngapus_ganti_rugi($id)
+	{
+		$where = array('id' => $id);
+		$this->modelku->delete_by_id($where, 't_ganti_rugi');
+		echo json_encode(array("status" => TRUE));
+		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Data Berhasil dihapus <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+	}
+
 	public function nginput_barang()
 	{
 		$this->load->view('admin/barang/v_input_barang');
@@ -269,6 +277,7 @@ class Barang extends CI_Controller
 		$where = array('id_barang_masuk' => $id);
 		$this->modelku->decrease_jumlah($id);
 		$this->modelku->delete_by_id($where, 't_barang_masuk');
+		$this->modelku->delete_by_id($where, 'detail_barang');
 		echo json_encode(array("status" => TRUE));
 		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Data Berhasil dihapus <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
 	}
@@ -319,50 +328,94 @@ class Barang extends CI_Controller
 
 	public function input_barang_masuk()
 	{
-		$id_barang_masuk = $this->input->post('id_barang_masuk');
-		$id_barang = $this->input->post('id_barang');
-		$jml_masuk = $this->input->post('no_inve');
 		$no_inv = $this->input->post('fields');
-		$tgl_masuk = $this->input->post('tgl_masuk');
-		$id_ruang = $this->input->post('id_ruang');
-		$satuan = $this->input->post('satuan');
 
-		$data = array 
-		(
-			'id_barang_masuk' => $id_barang_masuk,
-			'tgl_masuk' => $tgl_masuk,
-			'id_barang' => $id_barang,
-			'jumlah_masuk' => $jml_masuk,
-			'id_ruang' => $id_ruang,
-			'satuan' => $satuan
-		);
+		$this->session->set_userdata("invene", $no_inv);
 
-		$this->modelku->input_data($data, 't_barang_masuk');
-		$this->modelku->increase_jumlah($jml_masuk, $id_barang);
+		$this->load->helper(array('form', 'url'));
 
-		$this->session->set_userdata('Firstformdata',$data);
-		$data['t_barang_masuk'] = $this->modelku->tampil_data('t_barang_masuk')->result();
+        $this->load->library('form_validation');
 
-		foreach ($no_inv as $inv) 
-		{
+        $this->form_validation->set_rules('id_barang_masuk', 'ID Barang Masuk', 'callback_idmsuk_exists');
+        $this->form_validation->set_rules('fields[]', 'No Inventaris', 'callback_noinv_exists');
+        if ($this->form_validation->run() == FALSE)
+        {
+            $data['side']='admin/tampil/side';
+			$data['content']='admin/barang/v_barang_masuk';
+			$data['idbarang'] = $this->modelku->select_idBrang();
+			$data['idruang'] = $this->modelku->select_idR();
+			$this->load->view('admin/tampil/main', $data);
+        }
+        else
+        {
+        	$id_barang_masuk = $this->input->post('id_barang_masuk');
+			$id_barang = $this->input->post('id_barang');
+			$jml_masuk = $this->input->post('no_inve');
+			$no_inv = $this->input->post('fields');
+			$tgl_masuk = $this->input->post('tgl_masuk');
+			$id_ruang = $this->input->post('id_ruang');
+			$satuan = $this->input->post('satuan');
+
 			$data = array 
 			(
-				'id_barang' => $id_barang,
 				'id_barang_masuk' => $id_barang_masuk,
+				'tgl_masuk' => $tgl_masuk,
+				'id_barang' => $id_barang,
+				'jumlah_masuk' => $jml_masuk,
 				'id_ruang' => $id_ruang,
-				'no_inv' => $inv,
-				'kondisi' => "Ada"
+				'satuan' => $satuan
 			);
 
-			$this->modelku->input_data($data, 'detail_barang');
-			$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Data Berhasil ditambahkan, Silahkan cek pada menu lihat barang masuk. <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-			$this->session->set_userdata("aja",$data);
-		}
+			$this->modelku->input_data($data, 't_barang_masuk');
+			$this->modelku->increase_jumlah($jml_masuk, $id_barang);
 
-		redirect("admin/admin/input_barang_masuk");
-		echo json_encode(array("status" => TRUE));
-		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Data Berhasil ditambahkan, Silahkan cek pada menu lihat barang masuk. <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+			$this->session->set_userdata('Firstformdata',$data);
+			$data['t_barang_masuk'] = $this->modelku->tampil_data('t_barang_masuk')->result();
+
+			$invene = $this->session->userdata('invene');
+			foreach ($invene as $inv) 
+			{
+	        	$data = array 
+				(
+					'id_barang' => $id_barang,
+					'id_barang_masuk' => $id_barang_masuk,
+					'id_ruang' => $id_ruang,
+					'no_inv' => $inv,
+					'kondisi' => "Ada"
+				);
+
+				$this->modelku->input_data($data, 'detail_barang');
+				$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert">Data Berhasil ditambahkan, Silahkan cek pada menu data barang masuk. <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+				$this->session->set_userdata("aja",$data);
+			}
+
+			redirect("admin/admin/input_barang_masuk");
+			echo json_encode(array("status" => TRUE));
+			$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Data Berhasil ditambahkan, Silahkan cek pada menu data barang masuk. <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+        }
 	}
+
+	public function idmsuk_exists($key)
+    {
+        $exist = $this->modelku->idmsukExist($key);
+
+        if ($exist == true) 
+        {
+            $this->form_validation->set_message('idmsuk_exists', 'ID Barang Masuk '.$key.' sudah terdaftar');
+            return FALSE;
+        }
+    }
+
+    public function noinv_exists($key)
+    {
+        $exist = $this->modelku->noinvExist($key);
+
+        if ($exist == true) 
+        {
+            $this->form_validation->set_message('noinv_exists', 'No Inventaris yang dimasukan sudah terdaftar');
+            return FALSE;
+        }
+    }
 	//EOF For barang masuk
 
 
@@ -734,7 +787,12 @@ class Barang extends CI_Controller
 			}
 			else if($jml <= 0 || $jml < $jumlah_hilang)
 			{
-				echo "Tidak dapat menginput, karena jumlah barang saat ini masih kosong!";
+				$this->load->view('404err');
+				?>
+					<script type="text/javascript">
+						alert("Tidak dapat menginput, karena jumlah barang saat ini masih kosong!");
+					</script>
+				<?php
 			}
 		}
 	}
@@ -742,9 +800,10 @@ class Barang extends CI_Controller
 	public function ngapus_barang_ilang($id)
 	{
 		$where = array('id_barang_keluar' => $id);
-		$this->modelku->increase_jumlah_hilang($id);
 		$this->modelku->ngapus_dataKeluar_soko_hilang($id);
 		$this->modelku->delete_by_id($where, 't_kehilangan');
+		$this->modelku->delete_by_id($where, 'detail_barang');
+		$this->modelku->delete_by_id($where, 't_ganti_rugi');
 		echo json_encode(array("status" => TRUE));
 		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Data Berhasil dihapus <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
 	}		
@@ -808,9 +867,10 @@ class Barang extends CI_Controller
 	public function ngapus_barang_rusak($id)
 	{
 		$where = array('id_barang_keluar' => $id);
-		$this->modelku->increase_jumlah_rusak($id);
 		$this->modelku->ngapus_dataKeluar_soko_rusak($id);
 		$this->modelku->delete_by_id($where, 't_kerusakan');
+		$this->modelku->delete_by_id($where, 'detail_barang');
+		$this->modelku->delete_by_id($where, 't_ganti_rugi');
 		echo json_encode(array("status" => TRUE));
 		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Data Berhasil dihapus <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
 	}
@@ -834,6 +894,7 @@ class Barang extends CI_Controller
 		
 		$data = array
 		(
+			'id_barang_keluar' => $id_barang_keluar,
 			'tgl_rusak' => $tgl_rusak,
 			'jml_rusak' => $jml_rusak,
 			'id_barang' => $id_barang,
@@ -895,7 +956,12 @@ class Barang extends CI_Controller
 			}
 			else if($jml <= 0 || $jml < $jml_rusak)
 			{
-				echo "Tidak dapat menginput, karena jumlah barang saat ini masih kosong!";
+				$this->load->view('404err');
+				?>
+					<script type="text/javascript">
+						alert('Tidak dapat menginput, karena jumlah barang saat ini masih kosong!');
+					</script>
+				<?php
 			}
 		}
 
@@ -922,6 +988,7 @@ class Barang extends CI_Controller
 	public function ngapus_semua_histori()
 	{
 		$this->modelku->hapusHistoriPinjam('t_histori_pinjam');
+		$this->modelku->hapusHistoriPinjam('detail_histori_pinjam');
 		echo json_encode(array("status" => TRUE));
 		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Data Berhasil dihapus <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
 	}
@@ -929,6 +996,7 @@ class Barang extends CI_Controller
 	public function ngapus_semua_pengembalian()
 	{
 		$this->modelku->hapusSemuaDataPengembalian('t_pengembalian');
+		$this->modelku->hapusSemuaDataPengembalian('detail_pengembalian');
 		echo json_encode(array("status" => TRUE));
 		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Data Berhasil dihapus <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
 	}	
@@ -1046,13 +1114,12 @@ class Barang extends CI_Controller
 		$id_barang = $this->input->post('id_barang');
 		$tgl_peminjaman = $this->input->post('tgl_peminjaman');
 		$tgl_kembali = $this->input->post('tgl_kembali');
-		$kondisi = $this->input->post('kondisi');
 		$jumlah = $this->input->post('no_inve');
-		$no_inv = $this->input->post('fields');
+		$no_inv = $this->input->post('inve');
 		$keterangan = $this->input->post('keterangan');
 		$satuan = $this->input->post('satuan');
 		$id_ruang = $this->input->post('id_ruang');
-
+		
 		$data = array
 		(
 			'id_peminjaman' => $id_peminjaman,
@@ -1061,7 +1128,7 @@ class Barang extends CI_Controller
 			'tgl_peminjaman' => $tgl_peminjaman,
 			'tgl_kembali' => $tgl_kembali,
 			'peminjam' => $_SESSION['id'],
-			'kondisi' => $kondisi,
+			'kondisi' => 'Dipinjam',
 			'jumlah' => $jumlah,
 			'keterangan' => $keterangan
 		);
@@ -1110,7 +1177,12 @@ class Barang extends CI_Controller
 			}
 			else if($jml <= 0 || $jml < $jumlah)
 			{
-				echo "Tidak dapat menginput, karena jumlah barang saat ini masih kosong!";
+				$this->load->view("404err");
+				?>
+					<script type="text/javascript">
+						alert("Tidak dapat menginput, karena jumlah barang saat ini masih kosong!");
+					</script>
+				<?php
 			}
 		}
 	}
@@ -1141,168 +1213,337 @@ class Barang extends CI_Controller
 		$id_barang_keluar = $this->input->post('id_barang_keluar');
 		$id_barang = $this->input->post('id_barang');
 		$id_peminjaman = $this->input->post('id_peminjaman');
+		$atas_nama = $this->input->post('atas_nama');
 		$penanggung_jawab = $this->input->post('penanggung_jawab');
 		$tgl_kembali = $this->input->post('tgl_kembali');
 		$jml_kmbli = $this->input->post('jumlah_kembali');
-		$penanggung_jawab = $this->input->post('penanggung_jawab');
-		$no_inv = $this->input->post('fields');
+		$no_inv = $this->input->post('inve');
 
-		$data = array
-		(
-			'id_barang' => $id_barang,
-			'id_peminjaman' => $id_peminjaman,
-			'tgl_kembali' => $tgl_kembali,
-			'jumlah_kembali' => $jml_kmbli,
-			'penanggung_jawab' => $penanggung_jawab,
-			'keterangan' => 'Dikembalikan tanpa ada masalah'
-		);
+		if ($penanggung_jawab == "" || $penanggung_jawab == null) 
+		{
+			$data = array
+			(
+				'id_barang' => $id_barang,
+				'id_peminjaman' => $id_peminjaman,
+				'tgl_kembali' => $tgl_kembali,
+				'jumlah_kembali' => $jml_kmbli,
+				'penanggung_jawab_nama' => $_SESSION['fullname'],
+				'penanggung_jawab_id' => $_SESSION['id'],
+				'keterangan' => 'Dikembalikan tanpa ada masalah'
+			);
 
-		$qryIdPinjam = $this->db->query("select id_peminjaman from t_peminjaman where id_peminjaman='$id_peminjaman'");
-		$qryIdKlr = $this->db->query("select id_barang_keluar from t_peminjaman where id_barang_keluar='$id_barang_keluar'");
-		$qryTgl = $this->db->query("select tgl_kembali from t_peminjaman where tgl_kembali='$tgl_kembali'");
-		if (empty($qryIdPinjam->result_array())) 
-		{
-			$this->load->view("404nf");
-			?>
-			<script type="text/javascript">
-				alert("Data tidak dipinjam! Silahkan cek id peminjaman dan id barang keluar anda.");
-			</script>
-			<?php
-		}
-		else if (empty($qryIdKlr->result_array())) 
-		{
-			$this->load->view("404nf");
-			?>
-			<script type="text/javascript">
-				alert("Data tidak dipinjam! Silahkan cek id peminjaman dan id barang keluar anda.");
-			</script>
-			<?php
-		}
-		else if (empty($qryTgl->result_array())) 
-		{
-			$this->load->view("404nf");
-			?>
-			<script type="text/javascript">
-				alert("Maaf tanggal yang anda kirimkan tidak cocok dengan data kami, pastikan tanggal yang anda kirimkan sama dengan tanggal kembali anda.");
-			</script>
-			<?php
-		}
-		else 
-		{
-			$this->db->select('jumlah')->where('id_peminjaman',$id_peminjaman);
-			$query = $this->db->get('t_peminjaman');
-			foreach($query->result_array() as $row)
+			$qryIdPinjam = $this->db->query("select id_peminjaman from t_peminjaman where id_peminjaman='$id_peminjaman'");
+			$qryIdKlr = $this->db->query("select id_barang_keluar from t_peminjaman where id_barang_keluar='$id_barang_keluar'");
+			$qryTgl = $this->db->query("select tgl_kembali from t_peminjaman where tgl_kembali='$tgl_kembali'");
+			if (empty($qryIdPinjam->result_array())) 
 			{
-	    		$jml = $row['jumlah'];
-	    		if ($jml == 0) 
-				{
-					$this->modelku->input_data($data, 't_pengembalian');
-					$this->modelku->penghapusan_data_peminjaan($id_peminjaman);
-					$this->modelku->increase_jumlah($jml_kmbli, $id_barang);
-					$this->modelku->penghapusan_data_keluar($id_barang_keluar);
-
-					foreach ($no_inv as $inv) 
-					{
-						$ket = "Ada";
-						$this->modelku->update_DetailKembalian($ket, $inv);
-
-						$data2 = array
-						(
-							'id_peminjaman' => $id_peminjaman,
-							'no_inv' => $inv,
-							'keterangan' => 'Dikembalikan tanpa ada masalah'
-						);
-
-						$this->modelku->input_data($data2, 'detail_pengembalian');
-					}
-					$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Anda berhasil mengembalikan barang! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-					redirect('admin/admin/nginput_barang_pengembalian');
-					echo json_encode(array("status" => TRUE));
-				}
-				else if($jml > $jml_kmbli) 
-				{
-					$this->modelku->input_data($data, 't_pengembalian');
-					$data['t_pengembalian'] = $this->modelku->tampil_data('t_pengembalian')->result();
-					$this->modelku->decrease_peminjaman($jml_kmbli, $id_peminjaman);
-					$this->modelku->decrease_keluar($jml_kmbli, $id_barang_keluar);
-					$this->modelku->increase_jumlah($jml_kmbli, $id_barang);
-
-					foreach ($no_inv as $inv) 
-					{
-						$ket = "Ada";
-						$this->modelku->update_DetailKembalian($ket, $inv);
-
-						$data2 = array
-						(
-							'id_peminjaman' => $id_peminjaman,
-							'no_inv' => $inv,
-							'keterangan' => 'Dikembalikan tanpa ada masalah'
-						);
-
-						$this->modelku->input_data($data2, 'detail_pengembalian');
-					}
-					$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Anda berhasil mengembalikan barang! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-					redirect('admin/admin/nginput_barang_pengembalian');
-					echo json_encode(array("status" => TRUE));
-				}
-				else if ($jml == $jml_kmbli) 
-				{
-					$this->modelku->input_data($data, 't_pengembalian');
-					$this->modelku->increase_jumlah($jml_kmbli, $id_barang);
-					$this->modelku->decrease_keluar($jml_kmbli, $id_barang_keluar);
-					$this->modelku->penghapusan_data_peminjaan($id_peminjaman);
-
-					foreach ($no_inv as $inv) 
-					{
-						$ket = "Ada";
-						$this->modelku->update_DetailKembalian($ket, $inv);
-
-						$data2 = array
-						(
-							'id_peminjaman' => $id_peminjaman,
-							'no_inv' => $inv,
-							'keterangan' => 'Dikembalikan tanpa ada masalah'
-						);
-
-						$this->modelku->input_data($data2, 'detail_pengembalian');
-					}
-
-					$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Anda berhasil mengembalikan barang! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-					redirect('admin/admin/nginput_barang_pengembalian');
-					echo json_encode(array("status" => TRUE));
-
-				}
-				else if($jml_kmbli > $jml)
-				{
-					$this->load->view("404nf");
-					?>
-					<script type="text/javascript">
-						alert("Terjadi Kesalahan! Karena data yang anda kembalikan melebihi data yang anda pinjam!");
-					</script>
-					<?php
-				}
+				$this->load->view("404err");
+				?>
+				<script type="text/javascript">
+					alert("Data tidak dipinjam! Silahkan cek id peminjaman dan id barang keluar anda.");
+				</script>
+				<?php
 			}
-
-			$this->db->select('jumlah_keluar')->where('id_barang_keluar',$id_barang_keluar);
-			$query = $this->db->get('t_barang_keluar');
-			foreach($query->result_array() as $row)
+			else if (empty($qryIdKlr->result_array())) 
 			{
-				$jml = $row['jumlah_keluar'];
-
-				if ($jml == 0) 
-				{
-					$this->modelku->penghapusan_data_keluar($id_barang_keluar);
-				}
+				$this->load->view("404err");
+				?>
+				<script type="text/javascript">
+					alert("Data tidak dipinjam! Silahkan cek id peminjaman dan id barang keluar anda.");
+				</script>
+				<?php
 			}
-
-			$this->db->select('jml_rusak')->where('id_barang_keluar',$id_barang_keluar);
-			$query2 = $this->db->get('t_kerusakan');
-			foreach ($query2->result_array() as $row2) 
+			else if (empty($qryTgl->result_array())) 
 			{
-				$jml2 = $row2['jml_rusak'];
-				if($jml == $jml2)
+				$this->load->view("404err");
+				?>
+				<script type="text/javascript">
+					alert("Maaf tanggal yang anda kirimkan tidak cocok dengan data kami, pastikan tanggal yang anda kirimkan sama dengan tanggal kembali anda.");
+				</script>
+				<?php
+			}
+			else 
+			{
+				$this->db->select('jumlah')->where('id_peminjaman',$id_peminjaman);
+				$query = $this->db->get('t_peminjaman');
+				foreach($query->result_array() as $row)
 				{
-					$this->modelku->editKet_barang_keluar("Rusak", $id_barang_keluar);
+		    		$jml = $row['jumlah'];
+		    		if ($jml == 0) 
+					{
+						$this->modelku->input_data($data, 't_pengembalian');
+						$this->modelku->penghapusan_data_peminjaan($id_peminjaman);
+						$this->modelku->increase_jumlah($jml_kmbli, $id_barang);
+						$this->modelku->penghapusan_data_keluar($id_barang_keluar);
+
+						foreach ($no_inv as $inv) 
+						{
+							$ket = "Ada";
+							$this->modelku->update_DetailKembalian($ket, $inv);
+
+							$data2 = array
+							(
+								'id_peminjaman' => $id_peminjaman,
+								'no_inv' => $inv,
+								'keterangan' => 'Dikembalikan tanpa ada masalah'
+							);
+
+							$this->modelku->input_data($data2, 'detail_pengembalian');
+						}
+						$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Anda berhasil mengembalikan barang! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+						redirect('admin/admin/nginput_barang_pengembalian');
+						echo json_encode(array("status" => TRUE));
+					}
+					else if($jml > $jml_kmbli) 
+					{
+						$this->modelku->input_data($data, 't_pengembalian');
+						$data['t_pengembalian'] = $this->modelku->tampil_data('t_pengembalian')->result();
+						$this->modelku->decrease_peminjaman($jml_kmbli, $id_peminjaman);
+						$this->modelku->decrease_keluar($jml_kmbli, $id_barang_keluar);
+						$this->modelku->increase_jumlah($jml_kmbli, $id_barang);
+
+						foreach ($no_inv as $inv) 
+						{
+							$ket = "Ada";
+							$this->modelku->update_DetailKembalian($ket, $inv);
+
+							$data2 = array
+							(
+								'id_peminjaman' => $id_peminjaman,
+								'no_inv' => $inv,
+								'keterangan' => 'Dikembalikan tanpa ada masalah'
+							);
+
+							$this->modelku->input_data($data2, 'detail_pengembalian');
+						}
+						$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Anda berhasil mengembalikan barang! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+						redirect('admin/admin/nginput_barang_pengembalian');
+						echo json_encode(array("status" => TRUE));
+					}
+					else if ($jml == $jml_kmbli) 
+					{
+						$this->modelku->input_data($data, 't_pengembalian');
+						$this->modelku->increase_jumlah($jml_kmbli, $id_barang);
+						$this->modelku->decrease_keluar($jml_kmbli, $id_barang_keluar);
+						$this->modelku->penghapusan_data_peminjaan($id_peminjaman);
+						$this->modelku->penghapusan_data_keluar($id_barang_keluar);
+
+						foreach ($no_inv as $inv) 
+						{
+							$ket = "Ada";
+							$this->modelku->update_DetailKembalian($ket, $inv);
+
+							$data2 = array
+							(
+								'id_peminjaman' => $id_peminjaman,
+								'no_inv' => $inv,
+								'keterangan' => 'Dikembalikan tanpa ada masalah'
+							);
+
+							$this->modelku->input_data($data2, 'detail_pengembalian');
+						}
+
+						$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Anda berhasil mengembalikan barang! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+						redirect('admin/admin/nginput_barang_pengembalian');
+						echo json_encode(array("status" => TRUE));
+
+					}
+					else if($jml_kmbli > $jml)
+					{
+						$this->load->view("404err");
+						?>
+						<script type="text/javascript">
+							alert("Terjadi Kesalahan! Karena data yang anda kembalikan melebihi data yang anda pinjam!");
+						</script>
+						<?php
+					}
+				}
+
+				$this->db->select('jumlah_keluar')->where('id_barang_keluar',$id_barang_keluar);
+				$query = $this->db->get('t_barang_keluar');
+				foreach($query->result_array() as $row)
+				{
+					$jml = $row['jumlah_keluar'];
+
+					if ($jml == 0) 
+					{
+						$this->modelku->penghapusan_data_keluar($id_barang_keluar);
+					}
+				}
+
+				$this->db->select('jml_rusak')->where('id_barang_keluar',$id_barang_keluar);
+				$query2 = $this->db->get('t_kerusakan');
+				foreach ($query2->result_array() as $row2) 
+				{
+					$jml2 = $row2['jml_rusak'];
+					if($jml == $jml2)
+					{
+						$this->modelku->editKet_barang_keluar("Rusak", $id_barang_keluar);
+					}
+				}
+			}	
+		}
+		else
+		{
+			$data = array
+			(
+				'id_barang' => $id_barang,
+				'id_peminjaman' => $id_peminjaman,
+				'tgl_kembali' => $tgl_kembali,
+				'jumlah_kembali' => $jml_kmbli,
+				'penanggung_jawab_nama' => $atas_nama,
+				'penanggung_jawab_id' => $penanggung_jawab,
+				'keterangan' => 'Dikembalikan tanpa ada masalah'
+			);
+
+			$qryIdPinjam = $this->db->query("select id_peminjaman from t_peminjaman where id_peminjaman='$id_peminjaman'");
+			$qryIdKlr = $this->db->query("select id_barang_keluar from t_peminjaman where id_barang_keluar='$id_barang_keluar'");
+			$qryTgl = $this->db->query("select tgl_kembali from t_peminjaman where tgl_kembali='$tgl_kembali'");
+			if (empty($qryIdPinjam->result_array())) 
+			{
+				$this->load->view("404err");
+				?>
+				<script type="text/javascript">
+					alert("Data tidak dipinjam! Silahkan cek id peminjaman dan id barang keluar anda.");
+				</script>
+				<?php
+			}
+			else if (empty($qryIdKlr->result_array())) 
+			{
+				$this->load->view("404err");
+				?>
+				<script type="text/javascript">
+					alert("Data tidak dipinjam! Silahkan cek id peminjaman dan id barang keluar anda.");
+				</script>
+				<?php
+			}
+			else if (empty($qryTgl->result_array())) 
+			{
+				$this->load->view("404err");
+				?>
+				<script type="text/javascript">
+					alert("Maaf tanggal yang anda kirimkan tidak cocok dengan data kami, pastikan tanggal yang anda kirimkan sama dengan tanggal kembali anda.");
+				</script>
+				<?php
+			}
+			else 
+			{
+				$this->db->select('jumlah')->where('id_peminjaman',$id_peminjaman);
+				$query = $this->db->get('t_peminjaman');
+				foreach($query->result_array() as $row)
+				{
+		    		$jml = $row['jumlah'];
+		    		if ($jml == 0) 
+					{
+						$this->modelku->input_data($data, 't_pengembalian');
+						$this->modelku->penghapusan_data_peminjaan($id_peminjaman);
+						$this->modelku->increase_jumlah($jml_kmbli, $id_barang);
+						$this->modelku->penghapusan_data_keluar($id_barang_keluar);
+
+						foreach ($no_inv as $inv) 
+						{
+							$ket = "Ada";
+							$this->modelku->update_DetailKembalian($ket, $inv);
+
+							$data2 = array
+							(
+								'id_peminjaman' => $id_peminjaman,
+								'no_inv' => $inv,
+								'keterangan' => 'Dikembalikan tanpa ada masalah'
+							);
+
+							$this->modelku->input_data($data2, 'detail_pengembalian');
+						}
+						$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Anda berhasil mengembalikan barang! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+						redirect('admin/admin/nginput_barang_pengembalian');
+						echo json_encode(array("status" => TRUE));
+					}
+					else if($jml > $jml_kmbli) 
+					{
+						$this->modelku->input_data($data, 't_pengembalian');
+						$data['t_pengembalian'] = $this->modelku->tampil_data('t_pengembalian')->result();
+						$this->modelku->decrease_peminjaman($jml_kmbli, $id_peminjaman);
+						$this->modelku->decrease_keluar($jml_kmbli, $id_barang_keluar);
+						$this->modelku->increase_jumlah($jml_kmbli, $id_barang);
+
+						foreach ($no_inv as $inv) 
+						{
+							$ket = "Ada";
+							$this->modelku->update_DetailKembalian($ket, $inv);
+
+							$data2 = array
+							(
+								'id_peminjaman' => $id_peminjaman,
+								'no_inv' => $inv,
+								'keterangan' => 'Dikembalikan tanpa ada masalah'
+							);
+
+							$this->modelku->input_data($data2, 'detail_pengembalian');
+						}
+						$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Anda berhasil mengembalikan barang! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+						redirect('admin/admin/nginput_barang_pengembalian');
+						echo json_encode(array("status" => TRUE));
+					}
+					else if ($jml == $jml_kmbli) 
+					{
+						$this->modelku->input_data($data, 't_pengembalian');
+						$this->modelku->increase_jumlah($jml_kmbli, $id_barang);
+						$this->modelku->decrease_keluar($jml_kmbli, $id_barang_keluar);
+						$this->modelku->penghapusan_data_peminjaan($id_peminjaman);
+						$this->modelku->penghapusan_data_keluar($id_barang_keluar);
+
+						foreach ($no_inv as $inv) 
+						{
+							$ket = "Ada";
+							$this->modelku->update_DetailKembalian($ket, $inv);
+
+							$data2 = array
+							(
+								'id_peminjaman' => $id_peminjaman,
+								'no_inv' => $inv,
+								'keterangan' => 'Dikembalikan tanpa ada masalah'
+							);
+
+							$this->modelku->input_data($data2, 'detail_pengembalian');
+						}
+
+						$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Anda berhasil mengembalikan barang! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+						redirect('admin/admin/nginput_barang_pengembalian');
+						echo json_encode(array("status" => TRUE));
+
+					}
+					else if($jml_kmbli > $jml)
+					{
+						$this->load->view("404err");
+						?>
+						<script type="text/javascript">
+							alert("Terjadi Kesalahan! Karena data yang anda kembalikan melebihi data yang anda pinjam!");
+						</script>
+						<?php
+					}
+				}
+
+				$this->db->select('jumlah_keluar')->where('id_barang_keluar',$id_barang_keluar);
+				$query = $this->db->get('t_barang_keluar');
+				foreach($query->result_array() as $row)
+				{
+					$jml = $row['jumlah_keluar'];
+
+					if ($jml == 0) 
+					{
+						$this->modelku->penghapusan_data_keluar($id_barang_keluar);
+					}
+				}
+
+				$this->db->select('jml_rusak')->where('id_barang_keluar',$id_barang_keluar);
+				$query2 = $this->db->get('t_kerusakan');
+				foreach ($query2->result_array() as $row2) 
+				{
+					$jml2 = $row2['jml_rusak'];
+					if($jml == $jml2)
+					{
+						$this->modelku->editKet_barang_keluar("Rusak", $id_barang_keluar);
+					}
 				}
 			}
 		}
@@ -1340,6 +1581,7 @@ class Barang extends CI_Controller
 	{
 		$where = array('id_peminjaman' => $id);
 		$this->modelku->delete_by_id($where, 't_pengembalian');
+		$this->modelku->delete_by_id($where, 'detail_pengembalian');
 		echo json_encode(array("status" => TRUE));
 		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Data Berhasil dihapus <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
 	}
@@ -1349,131 +1591,276 @@ class Barang extends CI_Controller
 		$id_peminjaman = $this->input->post('id_peminjaman');
 		$id_barang_keluar = $this->input->post('id_barang_keluar');
 		$id_barang = $this->input->post('id_barang');
-		$no_inv = $this->input->post('fields');
+		$no_inv = $this->input->post('inve');
 		$tgl_kembali = $this->input->post('tgl_kembali');
 		$kerusakan = $this->input->post('kerusakan');
 		$jml_kmbli = $this->input->post('jumlah_rusak');
 		$tgl_rusak = $this->input->post('tgl_rusak');
 		$penyebab_kerusakan = $this->input->post('penyebab_kerusakan');
+		$atas_nama = $this->input->post('atas_nama');
 		$penanggung_jawab = $this->input->post('penanggung_jawab');
 		$solusi = $this->input->post('solusi');
 		$satuan = $this->input->post('satuan');
 		$id_ruang = $this->input->post('id_ruang');
 
-		$data = array
-		(
-			'tgl_kembali' => $tgl_kembali,
-			'id_peminjaman' => $id_peminjaman,
-			'kerusakan' => $kerusakan,
-			'id_barang' => $id_barang,
-			'jumlah_kembali' => $jml_kmbli,
-			'tgl_rusak' => $tgl_rusak,
-			'penyebab_kerusakan' => $penyebab_kerusakan,
-			'penanggung_jawab' => $_SESSION['id'],
-			'solusi' => $solusi,
-			'keterangan' => "Dikembalikan dalam keadaan rusak"
-		);
-
-		$data2 = array
-		(
-			'id_barang_keluar' => $id_barang_keluar,
-			'tgl_rusak' => $tgl_rusak,
-			'jml_rusak' => $jml_kmbli,
-			'id_barang' => $id_barang,
-			'penanggung_jawab' => $_SESSION['id'],
-			'tindakan' => $solusi
-		);
-
-		$qryIdPinjam = $this->db->query("select id_peminjaman from t_peminjaman where id_peminjaman='$id_peminjaman'");
-		$qryIdKeluar = $this->db->query("select id_barang_keluar from t_peminjaman where id_barang_keluar='$id_barang_keluar'");
-		$qryIdBrang= $this->db->query("select id_barang from t_peminjaman where id_barang='$id_barang'");
-		if (empty($qryIdPinjam->result_array() && $qryIdKeluar->result_array() && $qryIdBrang->result_array())) 
+		if ($penanggung_jawab == "" || $penanggung_jawab == null) 
 		{
-			echo "Data tidak dipinjam!";
-		}
-		else
-		{
-			$this->modelku->input_data($data, 't_pengembalian');
-			$data['t_pengembalian'] = $this->modelku->tampil_data('t_pengembalian')->result();
+			$data = array
+			(
+				'tgl_kembali' => $tgl_kembali,
+				'id_peminjaman' => $id_peminjaman,
+				'kerusakan' => $kerusakan,
+				'id_barang' => $id_barang,
+				'jumlah_kembali' => $jml_kmbli,
+				'tgl_rusak' => $tgl_rusak,
+				'penyebab_kerusakan' => $penyebab_kerusakan,
+				'penanggung_jawab_nama' => $_SESSION['fullname'],
+				'penanggung_jawab_id' => $_SESSION['id'],
+				'solusi' => $solusi,
+				'keterangan' => "Dikembalikan dalam keadaan rusak"
+			);
 
-			$query = $this->db->query("select jumlah from t_peminjaman where id_peminjaman='$id_peminjaman'")->result_array();
-			$query3 = $this->db->query("select jml_rusak from t_kerusakan where id_barang_keluar='$id_barang_keluar'")->result_array();
-			$qryIdBrangKluar = $this->db->query("select id_barang_keluar from t_kerusakan where id_barang_keluar='$id_barang_keluar'");
+			$data2 = array
+			(
+				'id_barang_keluar' => $id_barang_keluar,
+				'tgl_rusak' => $tgl_rusak,
+				'jml_rusak' => $jml_kmbli,
+				'id_barang' => $id_barang,
+				'penanggung_jawab' => $_SESSION['id'],
+				'tindakan' => $solusi
+			);
 
-			foreach($query as $row)
-			{	
+			$qryIdPinjam = $this->db->query("select id_peminjaman from t_peminjaman where id_peminjaman='$id_peminjaman'");
+			$qryIdKeluar = $this->db->query("select id_barang_keluar from t_peminjaman where id_barang_keluar='$id_barang_keluar'");
+			$qryIdBrang= $this->db->query("select id_barang from t_peminjaman where id_barang='$id_barang'");
+			if (empty($qryIdPinjam->result_array() && $qryIdKeluar->result_array() && $qryIdBrang->result_array())) 
+			{
+				$this->load->view('404err');
+				?>
+					<script type="text/javascript">
+						alert('Data tidak dipinjam!');
+					</script>
+				<?php
+			}
+			else
+			{
+				$this->modelku->input_data($data, 't_pengembalian');
+				$data['t_pengembalian'] = $this->modelku->tampil_data('t_pengembalian')->result();
 
-				if ($row['jumlah'] > $jml_kmbli) 
-				{
-				 	$this->modelku->decrease_peminjaman($jml_kmbli, $id_peminjaman);
-				 	if (empty($qryIdBrangKluar->result_array())) 
-				 	{
-						$this->modelku->input_data($data2, 't_kerusakan');
-						$cc = $row['jumlah'] - $jml_kmbli;
-						$this->modelku->editKet_barang_keluar("$jml_kmbli Rusak dan $cc dipinjam",$id_barang_keluar);
+				$query = $this->db->query("select jumlah from t_peminjaman where id_peminjaman='$id_peminjaman'")->result_array();
+				$query3 = $this->db->query("select jml_rusak from t_kerusakan where id_barang_keluar='$id_barang_keluar'")->result_array();
+				$qryIdBrangKluar = $this->db->query("select id_barang_keluar from t_kerusakan where id_barang_keluar='$id_barang_keluar'");
 
-						foreach ($no_inv as $inv) 
-						{
-							$ket = "Rusak";
-							$this->modelku->update_DetailKembalian2($ket, $inv);
-						}
-				 	}
-				 	else 
-				 	{
-						$this->modelku->penambahan_jumlah_barang_rusak($jml_kmbli, $id_barang_keluar);
-						foreach ($query3 as $row3)
-						{
-							//Akan work jika di t_peminjaman dan t_kerusakan ada data, jika salah satu atau keduanya gk ada data maka auto ora dadi.
-							$cc = $row['jumlah'] - $jml_kmbli;
-							$jmlRusak = $row3['jml_rusak'] + $jml_kmbli;
-							$this->modelku->editKet_barang_keluar("$jmlRusak Rusak dan $cc dipinjam",$id_barang_keluar);
-						}
+				foreach($query as $row)
+				{	
 
-						foreach ($no_inv as $inv) 
-						{
-							$ket = "Rusak";
-							$this->modelku->update_DetailKembalian2($ket, $inv);
-						}
-				 	}	
-				}
-				else if ($row['jumlah'] === $jml_kmbli) 
-				{
-					foreach ($no_inv as $inv) 
+					if ($row['jumlah'] > $jml_kmbli) 
 					{
-						$ket = "Rusak";
-						$this->modelku->update_DetailKembalian2($ket, $inv);
+					 	$this->modelku->decrease_peminjaman($jml_kmbli, $id_peminjaman);
+					 	if (empty($qryIdBrangKluar->result_array())) 
+					 	{
+							$this->modelku->input_data($data2, 't_kerusakan');
+							$cc = $row['jumlah'] - $jml_kmbli;
+							$this->modelku->editKet_barang_keluar("$jml_kmbli Rusak dan $cc dipinjam",$id_barang_keluar);
+
+							foreach ($no_inv as $inv) 
+							{
+								$ket = "Rusak";
+								$this->modelku->update_DetailKembalian2($ket, $inv);
+							}
+					 	}
+					 	else 
+					 	{
+							$this->modelku->penambahan_jumlah_barang_rusak($jml_kmbli, $id_barang_keluar);
+							foreach ($query3 as $row3)
+							{
+								//Akan work jika di t_peminjaman dan t_kerusakan ada data, jika salah satu atau keduanya gk ada data maka auto ora dadi.
+								$cc = $row['jumlah'] - $jml_kmbli;
+								$jmlRusak = $row3['jml_rusak'] + $jml_kmbli;
+								$this->modelku->editKet_barang_keluar("$jmlRusak Rusak dan $cc dipinjam",$id_barang_keluar);
+							}
+
+							foreach ($no_inv as $inv) 
+							{
+								$ket = "Rusak";
+								$this->modelku->update_DetailKembalian2($ket, $inv);
+							}
+					 	}	
 					}
-			  		$this->modelku->penghapusan_data_peminjaan($id_peminjaman);
-					$this->modelku->editKet_barang_keluar("Rusak",$id_barang_keluar);
-				  	$qryIdRskPnjm = $this->db->query("select id_barang_keluar from t_kerusakan where id_barang_keluar='$id_barang_keluar'");
-				  	$idKluarHilang = $this->db->query("select id_barang_keluar from t_kehilangan where id_barang_keluar='$id_barang_keluar'")->result_array();
-				  	$jmlHilang = $this->db->query("select jumlah_hilang from t_kehilangan where id_barang_keluar='$id_barang_keluar'")->result_array();
-				  	if (empty($qryIdRskPnjm->result_array())) 
-				  	{
-				  		$this->modelku->input_data($data2, 't_kerusakan');
-				  		foreach ($idKluarHilang as $hlng) 
-				  		{
-				  			foreach ($jmlHilang as $jmlHlng) 
-				  			{
-				  				if ($hlng['id_barang_keluar'] === $id_barang_keluar) 
+					else if ($row['jumlah'] === $jml_kmbli) 
+					{
+						foreach ($no_inv as $inv) 
+						{
+							$ket = "Rusak";
+							$this->modelku->update_DetailKembalian2($ket, $inv);
+						}
+				  		$this->modelku->penghapusan_data_peminjaan($id_peminjaman);
+						$this->modelku->editKet_barang_keluar("Rusak",$id_barang_keluar);
+					  	$qryIdRskPnjm = $this->db->query("select id_barang_keluar from t_kerusakan where id_barang_keluar='$id_barang_keluar'");
+					  	$idKluarHilang = $this->db->query("select id_barang_keluar from t_kehilangan where id_barang_keluar='$id_barang_keluar'")->result_array();
+					  	$jmlHilang = $this->db->query("select jumlah_hilang from t_kehilangan where id_barang_keluar='$id_barang_keluar'")->result_array();
+					  	if (empty($qryIdRskPnjm->result_array())) 
+					  	{
+					  		$this->modelku->input_data($data2, 't_kerusakan');
+					  		foreach ($idKluarHilang as $hlng) 
+					  		{
+					  			foreach ($jmlHilang as $jmlHlng) 
 					  			{
-					  				$hilang = $jmlHlng['jumlah_hilang'];
-					  				$this->modelku->editKet_barang_keluar("$hilang Hilang dan $jml_kmbli Rusak",$id_barang_keluar);
+					  				if ($hlng['id_barang_keluar'] === $id_barang_keluar) 
+						  			{
+						  				$hilang = $jmlHlng['jumlah_hilang'];
+						  				$this->modelku->editKet_barang_keluar("$hilang Hilang dan $jml_kmbli Rusak",$id_barang_keluar);
+						  			}
 					  			}
-				  			}
-				  		}
-				  	}
-				  	else
-				  	{
-				  		$this->modelku->penambahan_jumlah_barang_rusak($jml_kmbli, $id_barang_keluar);
-				  	}
-				}
-				else
-				{
-				 	echo "Terjadi Kesalahan! Karena data yang anda kembalikan melebihi data yang anda pinjam!";
+					  		}
+					  	}
+					  	else
+					  	{
+					  		$this->modelku->penambahan_jumlah_barang_rusak($jml_kmbli, $id_barang_keluar);
+					  	}
+					}
+					else
+					{
+						$this->load->view('404err');
+						?>
+							<script type="text/javascript">
+								alert("Terjadi Kesalahan! Karena data yang anda kembalikan melebihi data yang anda pinjam!");
+							</script>
+						<?php
+					}
 				}
 			}
 		}
+		else
+		{
+			$data = array
+			(
+				'tgl_kembali' => $tgl_kembali,
+				'id_peminjaman' => $id_peminjaman,
+				'kerusakan' => $kerusakan,
+				'id_barang' => $id_barang,
+				'jumlah_kembali' => $jml_kmbli,
+				'tgl_rusak' => $tgl_rusak,
+				'penyebab_kerusakan' => $penyebab_kerusakan,
+				'penanggung_jawab_nama' => $atas_nama,
+				'penanggung_jawab_id' => $penanggung_jawab,
+				'solusi' => $solusi,
+				'keterangan' => "Dikembalikan dalam keadaan rusak"
+			);
+
+			$data2 = array
+			(
+				'id_barang_keluar' => $id_barang_keluar,
+				'tgl_rusak' => $tgl_rusak,
+				'jml_rusak' => $jml_kmbli,
+				'id_barang' => $id_barang,
+				'penanggung_jawab' => $penanggung_jawab,
+				'tindakan' => $solusi
+			);
+
+			$qryIdPinjam = $this->db->query("select id_peminjaman from t_peminjaman where id_peminjaman='$id_peminjaman'");
+			$qryIdKeluar = $this->db->query("select id_barang_keluar from t_peminjaman where id_barang_keluar='$id_barang_keluar'");
+			$qryIdBrang= $this->db->query("select id_barang from t_peminjaman where id_barang='$id_barang'");
+			if (empty($qryIdPinjam->result_array() && $qryIdKeluar->result_array() && $qryIdBrang->result_array())) 
+			{
+				$this->load->view('404err');
+				?>
+					<script type="text/javascript">
+						alert("Data tidak dipinjam!");
+					</script>
+				<?php
+			}
+			else
+			{
+				$this->modelku->input_data($data, 't_pengembalian');
+				$data['t_pengembalian'] = $this->modelku->tampil_data('t_pengembalian')->result();
+
+				$query = $this->db->query("select jumlah from t_peminjaman where id_peminjaman='$id_peminjaman'")->result_array();
+				$query3 = $this->db->query("select jml_rusak from t_kerusakan where id_barang_keluar='$id_barang_keluar'")->result_array();
+				$qryIdBrangKluar = $this->db->query("select id_barang_keluar from t_kerusakan where id_barang_keluar='$id_barang_keluar'");
+
+				foreach($query as $row)
+				{	
+
+					if ($row['jumlah'] > $jml_kmbli) 
+					{
+					 	$this->modelku->decrease_peminjaman($jml_kmbli, $id_peminjaman);
+					 	if (empty($qryIdBrangKluar->result_array())) 
+					 	{
+							$this->modelku->input_data($data2, 't_kerusakan');
+							$cc = $row['jumlah'] - $jml_kmbli;
+							$this->modelku->editKet_barang_keluar("$jml_kmbli Rusak dan $cc dipinjam",$id_barang_keluar);
+
+							foreach ($no_inv as $inv) 
+							{
+								$ket = "Rusak";
+								$this->modelku->update_DetailKembalian2($ket, $inv);
+							}
+					 	}
+					 	else 
+					 	{
+							$this->modelku->penambahan_jumlah_barang_rusak($jml_kmbli, $id_barang_keluar);
+							foreach ($query3 as $row3)
+							{
+								//Akan work jika di t_peminjaman dan t_kerusakan ada data, jika salah satu atau keduanya gk ada data maka auto ora dadi.
+								$cc = $row['jumlah'] - $jml_kmbli;
+								$jmlRusak = $row3['jml_rusak'] + $jml_kmbli;
+								$this->modelku->editKet_barang_keluar("$jmlRusak Rusak dan $cc dipinjam",$id_barang_keluar);
+							}
+
+							foreach ($no_inv as $inv) 
+							{
+								$ket = "Rusak";
+								$this->modelku->update_DetailKembalian2($ket, $inv);
+							}
+					 	}	
+					}
+					else if ($row['jumlah'] === $jml_kmbli) 
+					{
+						foreach ($no_inv as $inv) 
+						{
+							$ket = "Rusak";
+							$this->modelku->update_DetailKembalian2($ket, $inv);
+						}
+				  		$this->modelku->penghapusan_data_peminjaan($id_peminjaman);
+						$this->modelku->editKet_barang_keluar("Rusak",$id_barang_keluar);
+					  	$qryIdRskPnjm = $this->db->query("select id_barang_keluar from t_kerusakan where id_barang_keluar='$id_barang_keluar'");
+					  	$idKluarHilang = $this->db->query("select id_barang_keluar from t_kehilangan where id_barang_keluar='$id_barang_keluar'")->result_array();
+					  	$jmlHilang = $this->db->query("select jumlah_hilang from t_kehilangan where id_barang_keluar='$id_barang_keluar'")->result_array();
+					  	if (empty($qryIdRskPnjm->result_array())) 
+					  	{
+					  		$this->modelku->input_data($data2, 't_kerusakan');
+					  		foreach ($idKluarHilang as $hlng) 
+					  		{
+					  			foreach ($jmlHilang as $jmlHlng) 
+					  			{
+					  				if ($hlng['id_barang_keluar'] === $id_barang_keluar) 
+						  			{
+						  				$hilang = $jmlHlng['jumlah_hilang'];
+						  				$this->modelku->editKet_barang_keluar("$hilang Hilang dan $jml_kmbli Rusak",$id_barang_keluar);
+						  			}
+					  			}
+					  		}
+					  	}
+					  	else
+					  	{
+					  		$this->modelku->penambahan_jumlah_barang_rusak($jml_kmbli, $id_barang_keluar);
+					  	}
+					}
+					else
+					{
+						$this->load->view('404err');
+						?>
+							<script type="text/javascript">
+								alert("Terjadi Kesalahan! Karena data yang anda kembalikan melebihi data yang anda pinjam!");
+							</script>
+						<?php
+					}
+				}
+			}
+		}
+
+		
 
 		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Anda berhasil mengembalikan barang! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
 		redirect('admin/admin/nginput_barang_pengembalianRusak');
@@ -1490,145 +1877,308 @@ class Barang extends CI_Controller
 		$id_peminjaman = $this->input->post('id_peminjaman');
 		$id_barang_keluar = $this->input->post('id_barang_keluar');
 		$id_barang = $this->input->post('id_barang');
-		$no_inv = $this->input->post('fields');
+		$no_inv = $this->input->post('inve');
 		$tgl_kembali = $this->input->post('tgl_kembali');
 		$jml_kmbli = $this->input->post('jumlah_hilang');
 		$tgl_hilang = $this->input->post('tgl_hilang');
 		$alasan_hilang = $this->input->post('alasan_hilang');
+		$atas_nama = $this->input->post('atas_nama');
+		$penanggung_jawab = $this->input->post('penanggung_jawab');
 		$solusi = $this->input->post('solusi');
 		$satuan = $this->input->post('satuan');
 		$id_ruang = $this->input->post('id_ruang');
 
-		$data = array
-		(
-			'tgl_kembali' => $tgl_kembali,
-			'id_peminjaman' => $id_peminjaman,
-			'id_barang' => $id_barang,
-			'jumlah_kembali' => $jml_kmbli,
-			'tgl_hilang' => $tgl_hilang,
-			'penanggung_jawab' => $_SESSION['id'],
-			'solusi' => $solusi,
-			'keterangan' => "Dikembalikan dalam keadaan hilang"
-		);
-
-		$data2 = array
-		(
-			'id_barang_keluar' => $id_barang_keluar,
-			'tgl_hilang' => $tgl_hilang,
-			'id_barang' => $id_barang,
-			'alasan_hilang' => $alasan_hilang,
-			'penanggung_jawab' => $_SESSION['id'],
-			'solusi' => $solusi,
-			'jumlah_hilang' => $jml_kmbli
-		);
-
-		$qryIdPinjam = $this->db->query("select id_peminjaman from t_peminjaman where id_peminjaman='$id_peminjaman'");
-		$qryIdKeluar = $this->db->query("select id_barang_keluar from t_peminjaman where id_barang_keluar='$id_barang_keluar'");
-		$qryIdBrang= $this->db->query("select id_barang from t_peminjaman where id_barang='$id_barang'");
-		if (empty($qryIdPinjam->result_array() && $qryIdKeluar->result_array() && $qryIdBrang->result_array())) 
+		if ($penanggung_jawab == "" || $penanggung_jawab == null) 
 		{
-			echo "Data tidak dipinjam!";
+			$data = array
+			(
+				'tgl_kembali' => $tgl_kembali,
+				'id_peminjaman' => $id_peminjaman,
+				'id_barang' => $id_barang,
+				'jumlah_kembali' => $jml_kmbli,
+				'tgl_hilang' => $tgl_hilang,
+				'penanggung_jawab_nama' => $_SESSION['fullname'],
+				'penanggung_jawab_id' => $_SESSION['id'],
+				'solusi' => $solusi,
+				'keterangan' => "Dikembalikan dalam keadaan hilang"
+			);
+
+			$data2 = array
+			(
+				'id_barang_keluar' => $id_barang_keluar,
+				'tgl_hilang' => $tgl_hilang,
+				'id_barang' => $id_barang,
+				'alasan_hilang' => $alasan_hilang,
+				'penanggung_jawab' => $_SESSION['id'],
+				'solusi' => $solusi,
+				'jumlah_hilang' => $jml_kmbli
+			);
+
+			$qryIdPinjam = $this->db->query("select id_peminjaman from t_peminjaman where id_peminjaman='$id_peminjaman'");
+			$qryIdKeluar = $this->db->query("select id_barang_keluar from t_peminjaman where id_barang_keluar='$id_barang_keluar'");
+			$qryIdBrang= $this->db->query("select id_barang from t_peminjaman where id_barang='$id_barang'");
+			if (empty($qryIdPinjam->result_array() && $qryIdKeluar->result_array() && $qryIdBrang->result_array())) 
+			{
+				$this->load->view('404err');
+				?>
+					<script type="text/javascript">
+						alert("Data tidak dipinjam!");
+					</script>
+				<?php
+			}
+			else
+			{
+				$this->modelku->input_data($data, 't_pengembalian');
+				$data['t_pengembalian'] = $this->modelku->tampil_data('t_pengembalian')->result();
+
+				$query = $this->db->query("select jumlah from t_peminjaman where id_peminjaman='$id_peminjaman'")->result_array();
+				$query3 = $this->db->query("select jumlah_hilang from t_kehilangan where id_barang_keluar='$id_barang_keluar'")->result_array();
+				$qryIdBrangKluar = $this->db->query("select id_barang_keluar from t_kehilangan where id_barang_keluar='$id_barang_keluar'");
+
+				foreach($query as $row)
+				{	
+
+					if ($row['jumlah'] > $jml_kmbli) 
+					{
+					 	$this->modelku->decrease_peminjaman($jml_kmbli, $id_peminjaman);
+					 	if (empty($qryIdBrangKluar->result_array())) 
+					 	{
+							 $this->modelku->input_data($data2, 't_kehilangan');
+							 $cc = $row['jumlah'] - $jml_kmbli;
+							 $this->modelku->editKet_barang_keluar("$jml_kmbli Hilang dan $cc dipinjam",$id_barang_keluar);
+
+							foreach ($no_inv as $inv) 
+							{
+								$ket = "Hilang";
+								$this->modelku->update_DetailKembalian2($ket, $inv);
+
+								$data7 = array
+								(
+									'id_peminjaman' => $id_peminjaman,
+									'no_inv' => $inv,
+									'keterangan' => "Dikembalikan dalam keadaan hilang"
+								);
+
+								$this->modelku->input_data($data7, 'detail_pengembalian');
+							}
+					 	}
+					 	else 
+					 	{
+							 $this->modelku->penambahan_jumlah_barang_hilang($jml_kmbli, $id_barang_keluar);
+							 foreach ($query3 as $row3)
+							 {
+								 //Akan work jika di t_peminjaman dan t_kerusakan ada data, jika salah satu atau keduanya gk ada data maka auto ora dadi.
+								 $cc = $row['jumlah'] - $jml_kmbli;
+								 $jmlRusak = $row3['jumlah_hilang'] + $jml_kmbli;
+								 $this->modelku->editKet_barang_keluar("$jmlRusak Hilang dan $cc dipinjam",$id_barang_keluar);
+							 }
+
+							foreach ($no_inv as $inv) 
+							{
+								$ket = "Hilang";
+								$this->modelku->update_DetailKembalian2($ket, $inv);
+							}
+					 	}	
+					}
+					else if ($row['jumlah'] === $jml_kmbli) 
+					{
+						foreach ($no_inv as $inv) 
+						{
+							$ket = "Hilang";
+							$this->modelku->update_DetailKembalian2($ket, $inv);
+						}
+						$this->modelku->penghapusan_data_peminjaan($id_peminjaman);
+						$this->modelku->editKet_barang_keluar("Hilang",$id_barang_keluar);
+					  	$qryIdHlangPnjm = $this->db->query("select id_barang_keluar from t_kehilangan where id_barang_keluar='$id_barang_keluar'");
+					  	$idKluarRusak = $this->db->query("select id_barang_keluar from t_kerusakan where id_barang_keluar='$id_barang_keluar'")->result_array();
+					  	$jmlRusak = $this->db->query("select jml_rusak from t_kerusakan where id_barang_keluar='$id_barang_keluar'")->result_array();
+					  	if (empty($qryIdHlangPnjm->result_array())) 
+					  	{
+					  		$this->modelku->input_data($data2, 't_kehilangan');
+					  		foreach ($no_inv as $inv) 
+							{
+								$data7 = array
+								(
+									'id_peminjaman' => $id_peminjaman,
+									'no_inv' => $inv,
+									'keterangan' => "Dikembalikan dalam keadaan hilang"
+								);
+
+								$this->modelku->input_data($data7, 'detail_pengembalian');
+							}
+					  		foreach ($idKluarRusak as $rsk) 
+					  		{
+					  			foreach ($jmlRusak as $jmlRsk) 
+					  			{
+					  				if ($rsk['id_barang_keluar'] === $id_barang_keluar) 
+						  			{
+						  				$rusak = $jmlRsk['jml_rusak'];
+						  				$this->modelku->editKet_barang_keluar("$rusak Rusak dan $jml_kmbli Hilang",$id_barang_keluar);
+						  			}
+					  			}
+					  		}
+					  	}
+					  	else
+					  	{
+					  		$this->modelku->penambahan_jumlah_barang_hilang($jml_kmbli, $id_barang_keluar);
+					  	}
+					}
+					else
+					{ 
+						$this->load->view('404err');
+						?>
+					 	<script type="text/javascript">
+					 		alert('Terjadi Kesalahan! Karena data yang anda kembalikan melebihi data yang anda pinjam!');
+					 	</script>
+					 	<?php
+					}
+				}
+			}
 		}
 		else
 		{
-			$this->modelku->input_data($data, 't_pengembalian');
-			$data['t_pengembalian'] = $this->modelku->tampil_data('t_pengembalian')->result();
+			$data = array
+			(
+				'tgl_kembali' => $tgl_kembali,
+				'id_peminjaman' => $id_peminjaman,
+				'id_barang' => $id_barang,
+				'jumlah_kembali' => $jml_kmbli,
+				'tgl_hilang' => $tgl_hilang,
+				'penanggung_jawab_nama' => $atas_nama,
+				'penanggung_jawab_id' => $penanggung_jawab,
+				'solusi' => $solusi,
+				'keterangan' => "Dikembalikan dalam keadaan hilang"
+			);
 
-			$query = $this->db->query("select jumlah from t_peminjaman where id_peminjaman='$id_peminjaman'")->result_array();
-			$query3 = $this->db->query("select jumlah_hilang from t_kehilangan where id_barang_keluar='$id_barang_keluar'")->result_array();
-			$qryIdBrangKluar = $this->db->query("select id_barang_keluar from t_kehilangan where id_barang_keluar='$id_barang_keluar'");
+			$data2 = array
+			(
+				'id_barang_keluar' => $id_barang_keluar,
+				'tgl_hilang' => $tgl_hilang,
+				'id_barang' => $id_barang,
+				'alasan_hilang' => $alasan_hilang,
+				'penanggung_jawab' => $penanggung_jawab,
+				'solusi' => $solusi,
+				'jumlah_hilang' => $jml_kmbli
+			);
 
-			foreach($query as $row)
-			{	
+			$qryIdPinjam = $this->db->query("select id_peminjaman from t_peminjaman where id_peminjaman='$id_peminjaman'");
+			$qryIdKeluar = $this->db->query("select id_barang_keluar from t_peminjaman where id_barang_keluar='$id_barang_keluar'");
+			$qryIdBrang= $this->db->query("select id_barang from t_peminjaman where id_barang='$id_barang'");
+			if (empty($qryIdPinjam->result_array() && $qryIdKeluar->result_array() && $qryIdBrang->result_array())) 
+			{
+				$this->load->view('404err');
+				?>
+					<script type="text/javascript">
+						alert("Data tidak dipinjam!");
+					</script>
+				<?php
+			}
+			else
+			{
+				$this->modelku->input_data($data, 't_pengembalian');
+				$data['t_pengembalian'] = $this->modelku->tampil_data('t_pengembalian')->result();
 
-				if ($row['jumlah'] > $jml_kmbli) 
-				{
-				 	$this->modelku->decrease_peminjaman($jml_kmbli, $id_peminjaman);
-				 	if (empty($qryIdBrangKluar->result_array())) 
-				 	{
-						 $this->modelku->input_data($data2, 't_kehilangan');
-						 $cc = $row['jumlah'] - $jml_kmbli;
-						 $this->modelku->editKet_barang_keluar("$jml_kmbli Hilang dan $cc dipinjam",$id_barang_keluar);
+				$query = $this->db->query("select jumlah from t_peminjaman where id_peminjaman='$id_peminjaman'")->result_array();
+				$query3 = $this->db->query("select jumlah_hilang from t_kehilangan where id_barang_keluar='$id_barang_keluar'")->result_array();
+				$qryIdBrangKluar = $this->db->query("select id_barang_keluar from t_kehilangan where id_barang_keluar='$id_barang_keluar'");
 
-						foreach ($no_inv as $inv) 
-						{
-							$ket = "Hilang";
-							$this->modelku->update_DetailKembalian2($ket, $inv);
+				foreach($query as $row)
+				{	
 
-							$data7 = array
-							(
-								'id_peminjaman' => $id_peminjaman,
-								'no_inv' => $inv,
-								'keterangan' => "Dikembalikan dalam keadaan hilang"
-							);
-
-							$this->modelku->input_data($data7, 'detail_pengembalian');
-						}
-				 	}
-				 	else 
-				 	{
-						 $this->modelku->penambahan_jumlah_barang_hilang($jml_kmbli, $id_barang_keluar);
-						 foreach ($query3 as $row3)
-						 {
-							 //Akan work jika di t_peminjaman dan t_kerusakan ada data, jika salah satu atau keduanya gk ada data maka auto ora dadi.
-							 $cc = $row['jumlah'] - $jml_kmbli;
-							 $jmlRusak = $row3['jumlah_hilang'] + $jml_kmbli;
-							 $this->modelku->editKet_barang_keluar("$jmlRusak Hilang dan $cc dipinjam",$id_barang_keluar);
-						 }
-
-						foreach ($no_inv as $inv) 
-						{
-							$ket = "Hilang";
-							$this->modelku->update_DetailKembalian2($ket, $inv);
-						}
-				 	}	
-				}
-				else if ($row['jumlah'] === $jml_kmbli) 
-				{
-					foreach ($no_inv as $inv) 
+					if ($row['jumlah'] > $jml_kmbli) 
 					{
-						$ket = "Hilang";
-						$this->modelku->update_DetailKembalian2($ket, $inv);
-					}
-					$this->modelku->penghapusan_data_peminjaan($id_peminjaman);
-					$this->modelku->editKet_barang_keluar("Hilang",$id_barang_keluar);
-				  	$qryIdHlangPnjm = $this->db->query("select id_barang_keluar from t_kehilangan where id_barang_keluar='$id_barang_keluar'");
-				  	$idKluarRusak = $this->db->query("select id_barang_keluar from t_kerusakan where id_barang_keluar='$id_barang_keluar'")->result_array();
-				  	$jmlRusak = $this->db->query("select jml_rusak from t_kerusakan where id_barang_keluar='$id_barang_keluar'")->result_array();
-				  	if (empty($qryIdHlangPnjm->result_array())) 
-				  	{
-				  		$this->modelku->input_data($data2, 't_kehilangan');
-				  		foreach ($no_inv as $inv) 
-						{
-							$data7 = array
-							(
-								'id_peminjaman' => $id_peminjaman,
-								'no_inv' => $inv,
-								'keterangan' => "Dikembalikan dalam keadaan hilang"
-							);
+					 	$this->modelku->decrease_peminjaman($jml_kmbli, $id_peminjaman);
+					 	if (empty($qryIdBrangKluar->result_array())) 
+					 	{
+							 $this->modelku->input_data($data2, 't_kehilangan');
+							 $cc = $row['jumlah'] - $jml_kmbli;
+							 $this->modelku->editKet_barang_keluar("$jml_kmbli Hilang dan $cc dipinjam",$id_barang_keluar);
 
-							$this->modelku->input_data($data7, 'detail_pengembalian');
+							foreach ($no_inv as $inv) 
+							{
+								$ket = "Hilang";
+								$this->modelku->update_DetailKembalian2($ket, $inv);
+
+								$data7 = array
+								(
+									'id_peminjaman' => $id_peminjaman,
+									'no_inv' => $inv,
+									'keterangan' => "Dikembalikan dalam keadaan hilang"
+								);
+
+								$this->modelku->input_data($data7, 'detail_pengembalian');
+							}
+					 	}
+					 	else 
+					 	{
+							 $this->modelku->penambahan_jumlah_barang_hilang($jml_kmbli, $id_barang_keluar);
+							 foreach ($query3 as $row3)
+							 {
+								 //Akan work jika di t_peminjaman dan t_kerusakan ada data, jika salah satu atau keduanya gk ada data maka auto ora dadi.
+								 $cc = $row['jumlah'] - $jml_kmbli;
+								 $jmlRusak = $row3['jumlah_hilang'] + $jml_kmbli;
+								 $this->modelku->editKet_barang_keluar("$jmlRusak Hilang dan $cc dipinjam",$id_barang_keluar);
+							 }
+
+							foreach ($no_inv as $inv) 
+							{
+								$ket = "Hilang";
+								$this->modelku->update_DetailKembalian2($ket, $inv);
+							}
+					 	}	
+					}
+					else if ($row['jumlah'] === $jml_kmbli) 
+					{
+						foreach ($no_inv as $inv) 
+						{
+							$ket = "Hilang";
+							$this->modelku->update_DetailKembalian2($ket, $inv);
 						}
-				  		foreach ($idKluarRusak as $rsk) 
-				  		{
-				  			foreach ($jmlRusak as $jmlRsk) 
-				  			{
-				  				if ($rsk['id_barang_keluar'] === $id_barang_keluar) 
+						$this->modelku->penghapusan_data_peminjaan($id_peminjaman);
+						$this->modelku->editKet_barang_keluar("Hilang",$id_barang_keluar);
+					  	$qryIdHlangPnjm = $this->db->query("select id_barang_keluar from t_kehilangan where id_barang_keluar='$id_barang_keluar'");
+					  	$idKluarRusak = $this->db->query("select id_barang_keluar from t_kerusakan where id_barang_keluar='$id_barang_keluar'")->result_array();
+					  	$jmlRusak = $this->db->query("select jml_rusak from t_kerusakan where id_barang_keluar='$id_barang_keluar'")->result_array();
+					  	if (empty($qryIdHlangPnjm->result_array())) 
+					  	{
+					  		$this->modelku->input_data($data2, 't_kehilangan');
+					  		foreach ($no_inv as $inv) 
+							{
+								$data7 = array
+								(
+									'id_peminjaman' => $id_peminjaman,
+									'no_inv' => $inv,
+									'keterangan' => "Dikembalikan dalam keadaan hilang"
+								);
+
+								$this->modelku->input_data($data7, 'detail_pengembalian');
+							}
+					  		foreach ($idKluarRusak as $rsk) 
+					  		{
+					  			foreach ($jmlRusak as $jmlRsk) 
 					  			{
-					  				$rusak = $jmlRsk['jml_rusak'];
-					  				$this->modelku->editKet_barang_keluar("$rusak Rusak dan $jml_kmbli Hilang",$id_barang_keluar);
+					  				if ($rsk['id_barang_keluar'] === $id_barang_keluar) 
+						  			{
+						  				$rusak = $jmlRsk['jml_rusak'];
+						  				$this->modelku->editKet_barang_keluar("$rusak Rusak dan $jml_kmbli Hilang",$id_barang_keluar);
+						  			}
 					  			}
-				  			}
-				  		}
-				  	}
-				  	else
-				  	{
-				  		$this->modelku->penambahan_jumlah_barang_hilang($jml_kmbli, $id_barang_keluar);
-				  	}
-				}
-				else
-				{
-				 	echo "Terjadi Kesalahan! Karena data yang anda kembalikan melebihi data yang anda pinjam!";
+					  		}
+					  	}
+					  	else
+					  	{
+					  		$this->modelku->penambahan_jumlah_barang_hilang($jml_kmbli, $id_barang_keluar);
+					  	}
+					}
+					else
+					{
+						$this->load->view('404err');
+						?>
+							<script type="text/javascript">
+								alert("Terjadi Kesalahan! Karena data yang anda kembalikan melebihi data yang anda pinjam!");
+							</script>
+						<?php
+					}
 				}
 			}
 		}
@@ -1649,4 +2199,421 @@ class Barang extends CI_Controller
 		$this->modelku->hapus_data($where, 't_pengembalian');
 		redirect('admin\barang/barang/ndeleng_data_pengembalian');	
 	}
+
+	public function input_ganti_rugi()
+	{
+		$this->load->helper(array('form', 'url'));
+
+        $this->load->library('form_validation');
+        $choice = $this->input->post('choice');
+        $this->form_validation->set_rules('id_barang_keluar', 'ID Barang Keluar', 'callback_idkluar_exists['.$choice.']');
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $data['side']='admin/tampil/side';
+			$data['content']='admin/barang/v_ganti_rugi';
+			$data['idbarang'] = $this->modelku->select_idBrang();
+			$this->load->view('admin/tampil/main', $data);
+        }
+        else
+        {
+        	$choice = $this->input->post('choice');
+			$id_barang_keluar = $this->input->post('id_barang_keluar');
+			$id_barang = $this->input->post('id_barang');
+			$jumlah = $this->input->post('jumlah');
+			$tgl_ganti_rugi = $this->input->post('tgl_ganti_rugi');
+			$totHarga = $this->input->post('totharga');
+			$penanggung_jawab = $this->input->post('penanggung_jawab');
+
+			if ($penanggung_jawab == "" || $penanggung_jawab == null) 
+			{
+				$data = array
+				(
+					'pengganti_rugi' => $_SESSION['id'],
+					'mengganti_barang' => $choice,
+					'id_barang_keluar' => $id_barang_keluar,
+					'id_barang' => $id_barang,
+					'jumlah' => $jumlah,
+					'tgl_ganti_rugi' => $tgl_ganti_rugi,
+					'total_harga' => $totHarga
+				);
+
+				$tagihan = number_format($totHarga, 0, ",", ".");
+
+				$this->modelku->input_data($data, 't_ganti_rugi');
+				$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Transaksi berhasil. Silahkan bayar tagihan anda sebesar Rp.'.$tagihan.' kepada admin, untuk proses konfirmasi.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+				redirect('admin/admin/ndeleng_ganti_rugi');
+				echo json_encode(array("status" => TRUE));
+			}
+			else
+			{
+				$data = array
+				(
+					'pengganti_rugi' => $penanggung_jawab,
+					'mengganti_barang' => $choice,
+					'id_barang_keluar' => $id_barang_keluar,
+					'id_barang' => $id_barang,
+					'jumlah' => $jumlah,
+					'tgl_ganti_rugi' => $tgl_ganti_rugi,
+					'total_harga' => $totHarga
+				);
+
+				$tagihan = number_format($totHarga, 0, ",", ".");
+
+				$this->modelku->input_data($data, 't_ganti_rugi');
+				$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Transaksi berhasil. Silahkan bayar tagihan anda sebesar Rp.'.$tagihan.' kepada admin, untuk proses konfirmasi.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+				redirect('admin/admin/ndeleng_ganti_rugi');
+				echo json_encode(array("status" => TRUE));
+			}
+        }
+	}
+
+	public function idkluar_exists($key, $choice)
+    {
+        $exist = $this->modelku->idkluarExist($key, $choice);
+
+        if ($exist == true) 
+        {
+            $this->form_validation->set_message('idkluar_exists', 'Tidak bisa mengganti rugi barang untuk ke 2 kalinya!');
+            return FALSE;
+        }
+    }
+
+    public function hapusSelected()
+  	{
+  		$toggle;
+    	foreach ($_POST['ckbdelete'] as $key) 
+    	{
+    		if ($key == "" || $key == null) 
+    		{
+    			$toggle = false;
+    		}
+    		else
+    		{
+    			$toggle = true;
+    			$this->modelku->DeleteById($key);
+    		}
+    	}
+
+    	if ($toggle == true) 
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Berhasil menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/nonton_ganti_rugi');
+    	}
+    	else
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-danger" role="alert"> Gagal menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/nonton_ganti_rugi');
+    	}
+  	}
+
+  	public function hapusIdBarang()
+  	{
+  		$toggle;
+    	foreach ($_POST['ckbdelete'] as $key) 
+    	{
+    		if ($key == "" || $key == null) 
+    		{
+    			$toggle = false;
+    		}
+    		else
+    		{
+    			$toggle = true;
+    			$where = array('id_barang' => $key);
+    			$this->modelku->delete_by_id2($where, 't_barang');
+    			$this->modelku->delete_by_id2($where, 'detail_barang');
+    			$this->modelku->delete_by_id2($where, 't_barang_masuk');
+    		}
+    	}
+
+    	if ($toggle == true) 
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Berhasil menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_barang');
+    	}
+    	else
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-danger" role="alert"> Gagal menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_barang');
+    	}
+  	}
+
+  	public function hapusIdBarangMsuk()
+  	{
+  		$toggle;
+    	foreach ($_POST['ckbdelete'] as $key) 
+    	{
+    		if ($key == "" || $key == null) 
+    		{
+    			$toggle = false;
+    		}
+    		else
+    		{
+    			$toggle = true;
+    			$where = array('id_barang_masuk' => $key);
+    			$this->modelku->decrease_jumlah($key);
+    			$this->modelku->delete_by_id2($where, 't_barang_masuk');
+    			$this->modelku->delete_by_id2($where, 'detail_barang');
+    		}
+    	}
+
+    	if ($toggle == true) 
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Berhasil menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_barangMasuk');
+    	}
+    	else
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-danger" role="alert"> Gagal menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_barangMasuk');
+    	}
+  	}
+
+  	public function hapusIdBarangKluar()
+  	{
+  		$toggle;
+    	foreach ($_POST['ckbdelete'] as $key) 
+    	{
+    		if ($key == "" || $key == null) 
+    		{
+    			$toggle = false;
+    		}
+    		else
+    		{
+    			$toggle = true;
+    			$where = array('id_barang_keluar' => $key);
+    			$this->modelku->increase_jumlah_keluar($key);
+				$this->modelku->ngapus_dataPinjam_soko_keluar($key);
+				$this->modelku->ngapus_dataRusak_soko_rusak($key);
+				$this->modelku->ngapus_dataHilang_soko_keluar($key);
+    			$this->modelku->delete_by_id2($where, 't_barang_keluar');
+    		}
+    	}
+
+    	if ($toggle == true) 
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Berhasil menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_barang_keluar');
+    	}
+    	else
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-danger" role="alert"> Gagal menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_barang_keluar');
+    	}
+  	}
+
+  	public function hapusIdBarangHlng()
+  	{
+  		$toggle;
+    	foreach ($_POST['ckbdelete'] as $key) 
+    	{
+    		if ($key == "" || $key == null) 
+    		{
+    			$toggle = false;
+    		}
+    		else
+    		{
+    			$toggle = true;
+    			$where = array('id_barang_keluar' => $key);
+    			$this->modelku->ngapus_dataKeluar_soko_hilang($key);
+				$this->modelku->delete_by_id2($where, 't_kehilangan');
+				$this->modelku->delete_by_id2($where, 'detail_barang');
+				$this->modelku->delete_by_id($where, 't_ganti_rugi');
+    		}
+    	}
+
+    	if ($toggle == true) 
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Berhasil menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_barang_ilang');
+    	}
+    	else
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-danger" role="alert"> Gagal menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_barang_ilang');
+    	}
+  	}
+
+  	public function hapusIdBarangRsk()
+  	{
+  		$toggle;
+    	foreach ($_POST['ckbdelete'] as $key) 
+    	{
+    		if ($key == "" || $key == null) 
+    		{
+    			$toggle = false;
+    		}
+    		else
+    		{
+    			$toggle = true;
+    			$where = array('id_barang_keluar' => $key);
+    			$this->modelku->ngapus_dataKeluar_soko_rusak($key);
+				$this->modelku->delete_by_id($where, 't_kerusakan');
+				$this->modelku->delete_by_id($where, 'detail_barang');
+				$this->modelku->delete_by_id($where, 't_ganti_rugi');
+    		}
+    	}
+
+    	if ($toggle == true) 
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Berhasil menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_barang_rusak');
+    	}
+    	else
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-danger" role="alert"> Gagal menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_barang_rusak');
+    	}
+  	}
+
+  	public function hapusDataPnjm()
+  	{
+  		$toggle;
+    	foreach ($_POST['ckbdelete'] as $key) 
+    	{
+    		if ($key == "" || $key == null) 
+    		{
+    			$toggle = false;
+    		}
+    		else
+    		{
+    			$toggle = true;
+    			$where = array('id_barang_keluar' => $key);
+    			$this->modelku->increase_jumlah_pinjam($key);
+				$this->modelku->ngapus_dataKeluar_soko_pinjam($key);
+				$this->modelku->delete_by_id2($where, 't_peminjaman');
+    		}
+    	}
+
+    	if ($toggle == true) 
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Berhasil menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_barang_pinjam');
+    	}
+    	else
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-danger" role="alert"> Gagal menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_barang_pinjam');
+    	}
+  	}
+
+  	public function hapusHistoriPnjm()
+  	{
+  		$toggle;
+    	foreach ($_POST['ckbdelete'] as $key) 
+    	{
+    		if ($key == "" || $key == null) 
+    		{
+    			$toggle = false;
+    		}
+    		else
+    		{
+    			$toggle = true;
+    			$where = array('id_peminjaman' => $key);
+    			$this->modelku->delete_by_id($where, 't_histori_pinjam');
+				$this->modelku->delete_by_id($where, 'detail_histori_pinjam');
+    		}
+    	}
+
+    	if ($toggle == true) 
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Berhasil menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_histori_pinjam');
+    	}
+    	else
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-danger" role="alert"> Gagal menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_histori_pinjam');
+    	}
+  	}
+
+  	public function hapusDataKmbli()
+  	{
+  		$toggle;
+    	foreach ($_POST['ckbdelete'] as $key) 
+    	{
+    		if ($key == "" || $key == null) 
+    		{
+    			$toggle = false;
+    		}
+    		else
+    		{
+    			$toggle = true;
+    			$where = array('id_peminjaman' => $key);
+    			$this->modelku->delete_by_id($where, 't_pengembalian');
+				$this->modelku->delete_by_id($where, 'detail_pengembalian');
+    		}
+    	}
+
+    	if ($toggle == true) 
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Berhasil menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_data_pengembalian');
+    	}
+    	else
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-danger" role="alert"> Gagal menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_data_pengembalian');
+    	}
+  	}
+
+  	public function hapusDataRuang()
+  	{
+  		$toggle;
+    	foreach ($_POST['ckbdelete'] as $key) 
+    	{
+    		if ($key == "" || $key == null) 
+    		{
+    			$toggle = false;
+    		}
+    		else
+    		{
+    			$toggle = true;
+    			$where = array('id' => $key);
+				$this->modelku->delete_by_id2($where, 't_user');
+    		}
+    	}
+
+    	if ($toggle == true) 
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Berhasil menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_ruang');
+    	}
+    	else
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-danger" role="alert"> Gagal menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_ruang');
+    	}
+  	}
+
+  	public function hapusDataUser()
+  	{
+  		$toggle;
+    	foreach ($_POST['ckbdelete'] as $key) 
+    	{
+    		if ($key == "" || $key == null) 
+    		{
+    			$toggle = false;
+    		}
+    		else
+    		{
+    			$toggle = true;
+    			$where = array('id_barang_keluar' => $key);
+    			$this->modelku->ngapus_dataKeluar_soko_hilang($key);
+				$this->modelku->delete_by_id2($where, 't_kehilangan');
+				$this->modelku->delete_by_id2($where, 'detail_barang');
+    		}
+    	}
+
+    	if ($toggle == true) 
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-success" role="alert"> Berhasil menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_user');
+    	}
+    	else
+    	{
+    		$this->session->set_flashdata('notif','<div class="alert alert-danger" role="alert"> Gagal menghapus data! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    		return redirect('admin/admin/ndeleng_user');
+    	}
+  	}
 }

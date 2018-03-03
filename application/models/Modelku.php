@@ -81,6 +81,20 @@ class Modelku extends CI_Model
       	'$jumlah_masuk' where id_barang = '$id_barang' and jumlah > 0");
 	}
 
+	public function decrease_jumlahMsk($id)
+	{ 
+		$this->db->select('id_barang_masuk, jumlah_masuk')->where('id_barang_masuk',$id);
+		$query = $this->db->get('t_barang_masuk');
+		foreach($query->result_array() as $row)
+		{
+    		$id_barang = $row['id_barang'];
+    		$jumlah_masuk = $row['jumlah_masuk'];
+		}
+
+		$qry3 = $this->db->query("update t_barang set jumlah = jumlah - 
+      	'$jumlah_masuk' where id_barang = '$id_barang' and jumlah > 0");
+	}
+
 	public function update_barang_jumlah($jumlah, $id)
 	{
 		$this->db->query("update t_barang set jumlah = '$jumlah' where id_barang = '$id'");
@@ -105,19 +119,19 @@ class Modelku extends CI_Model
 	}
 
 	//Hilang
-	public function increase_jumlah_hilang($id)
-	{ 
-		$this->db->select('id_barang, jumlah_hilang')->where('id_barang_keluar',$id);
-		$query = $this->db->get('t_kehilangan');
-		foreach($query->result_array() as $row)
-		{
-    		$id_barang = $row['id_barang'];
-    		$jumlah_hilang = $row['jumlah_hilang'];
-		}
+	// public function increase_jumlah_hilang($id)
+	// { 
+	// 	$this->db->select('id_barang, jumlah_hilang')->where('id_barang_keluar',$id);
+	// 	$query = $this->db->get('t_kehilangan');
+	// 	foreach($query->result_array() as $row)
+	// 	{
+ //    		$id_barang = $row['id_barang'];
+ //    		$jumlah_hilang = $row['jumlah_hilang'];
+	// 	}
 
-		$qry3 = $this->db->query("update t_barang set jumlah = jumlah + 
-      	'$jumlah_hilang' where id_barang = '$id_barang'");
-	}
+	// 	$qry3 = $this->db->query("update t_barang set jumlah = jumlah + 
+ //      	'$jumlah_hilang' where id_barang = '$id_barang'");
+	// }
 
 	public function ngapus_dataKeluar_soko_hilang($id)
 	{
@@ -432,30 +446,107 @@ class Modelku extends CI_Model
 		return $this->db->get_where($table, $where);
 	}
 
-	public function select_inv()
+	public function select_inv($id_barang)
 	{
-		$this->db->select("no_inv");
-	    $this->db->from('detail_barang');
-	    $this->db->where("kondisi = 'Ada' ");
-	    $this->db->group_by("no_inv");
-	    $query = $this->db->get();
-	    return $query;
-	}
+	    $this->db->where('id_barang', $id_barang);
+	    $this->db->where('kondisi', 'Ada');
+	    $result = $this->db->get('detail_barang')->result();
+	    
+	    return $result;
+  	}
+
+  	public function select_ruang($id_ruang)
+	{
+	    $this->db->select('*');
+		$this->db->from('t_barang tb');
+		$this->db->join('detail_barang db', 'db.id_barang = tb.id_barang', 'left');
+		$this->db->where('db.id_ruang', $id_ruang);
+		$this->db->group_by('tb.id_barang');
+		$query = $this->db->get()->result();
+
+		return $query; 
+  	}
+
+  	public function jumlahHlng($id_barang_keluar)
+	{
+	    $this->db->where('id_barang_keluar', $id_barang_keluar);
+	    $result = $this->db->get('t_kehilangan')->result();
+	    
+	    return $result;
+  	}
+
+  	public function jumlahRsk($id_barang_keluar)
+	{
+	    $this->db->where('id_barang_keluar', $id_barang_keluar);
+	    $result = $this->db->get('t_kerusakan')->result();
+	    
+	    return $result;
+  	}
+
+  	public function IdBrngKmbli($id_peminjaman)
+	{
+	    $this->db->select('*');
+		$this->db->from('t_barang tb');
+		$this->db->join('t_peminjaman tp', 'tp.id_barang = tb.id_barang', 'left');
+		$this->db->where('tp.id_peminjaman', $id_peminjaman);
+		$this->db->group_by('tb.id_barang');
+		$query = $this->db->get()->result();
+
+		return $query; 
+  	}
+
+  	public function IdBrngHlng($id_barang_keluar)
+	{
+	    $this->db->select('*');
+		$this->db->from('t_barang tb');
+		$this->db->join('t_kehilangan tk', 'tk.id_barang = tb.id_barang', 'left');
+		$this->db->where('tk.id_barang_keluar', $id_barang_keluar);
+		$this->db->group_by('tb.id_barang');
+		$query = $this->db->get()->result();
+
+		return $query; 
+  	}
+
+  	public function IdBrngRsk($id_barang_keluar)
+	{
+	    $this->db->select('*');
+		$this->db->from('t_barang tb');
+		$this->db->join('t_kerusakan tk', 'tk.id_barang = tb.id_barang', 'left');
+		$this->db->where('tk.id_barang_keluar', $id_barang_keluar);
+		$this->db->group_by('tb.id_barang');
+		$query = $this->db->get()->result();
+
+		return $query; 
+  	}
+
+  	public function select_invKmbli($id_peminjaman, $id_barang_keluar, $id_barang)
+  	{
+  		$this->db->where('id_peminjaman', $id_peminjaman);
+  		$this->db->where('id_barang_keluar', $id_barang_keluar);
+  		$this->db->where('id_barang', $id_barang);
+  		$this->db->where('keterangan', 'barang keluar');
+  		$this->db->where('kondisi', 'Dipinjam');
+	    $result = $this->db->get('detail_barang')->result();
+	    
+	    return $result;
+  	}
+
+  	public function totHarga($id_barang)
+  	{
+  		$this->db->where('id_barang', $id_barang);
+	    $result = $this->db->get('t_barang')->result();
+	    
+	    return $result;
+  	}
 
 	public function select_idBrang()
 	{
-		$this->db->select("id_barang");
-	    $this->db->from('t_barang');
-	    $query = $this->db->get();
-	    return $query;
+		return $this->db->get('t_barang')->result();
 	}
 
 	public function select_idR()
 	{
-		$this->db->select("id_ruang");
-	    $this->db->from('t_ruang');
-	    $query = $this->db->get();
-	    return $query;
+		return $this->db->get('t_ruang')->result();
 	}
 
 	public function select_invPinjam()
@@ -524,4 +615,97 @@ class Modelku extends CI_Model
 		$this->db->where($where);
 		$this->db->delete($table);
 	}
+
+	public function delete_by_id2($where, $table)
+	{
+		$this->db->where($where);
+		$this->db->delete($table);
+	}
+
+	public function usernameExist($username)
+	{
+		$this->db->where('username',$username);
+	    $query = $this->db->get('t_user');
+	    if ($query->num_rows() > 0){
+	        return true;
+	    }
+	    else{
+	        return false;
+	    }
+	}
+
+	public function cekpjawab($pjawab)
+	{
+		$this->db->where('penanggung_jawab(id)',$pjawab);
+	    $query = $this->db->get('t_user');
+	    if ($query->num_rows() > 0){
+	        return true;
+	    }
+	    else{
+	        return false;
+	    }
+	}
+
+	public function unameExist($key)
+	{
+		$this->db->where('username', $key);
+		$qry = $this->db->get('t_user');
+		if ($qry->num_rows() > 0){
+	        return true;
+	    }
+	    else{
+	        return false;
+	    }
+	}
+
+	public function idkluarExist($key, $choice)
+	{
+		$this->db->where('id_barang_keluar', $key);
+		$this->db->where('mengganti_barang', $choice);
+		$qry = $this->db->get('t_ganti_rugi');
+		if ($qry->num_rows() > 0){
+	        return true;
+	    }
+	    else{
+	        return false;
+	    }
+	}
+
+	public function idmsukExist($key)
+	{
+		$this->db->where('id_barang_masuk', $key);
+		$qry = $this->db->get('t_barang_masuk');
+		if ($qry->num_rows() > 0){
+	        return true;
+	    }
+	    else{
+	        return false;
+	    }
+	}
+
+	public function noinvExist($key)
+	{
+		$this->db->where('no_inv', $key);
+		$qry = $this->db->get('detail_barang');
+		if ($qry->num_rows() > 0){
+	        return true;
+	    }
+	    else{
+	        return false;
+	    }
+	}
+
+	public function select_totHarga($id_barang_keluar)
+	{
+		$this->db->where('id_barang_keluar', $id_barang_keluar);
+		$qry = $this->db->get('t_ganti_rugi');
+		return $qry->result();
+	}
+
+	public function DeleteById($id)
+	{
+    	//$this->db->delete('guestbook', array('id' => $id));
+    	$this->db->where('id', $id);
+    	$this->db->delete('t_ganti_rugi');
+  	} 
 }

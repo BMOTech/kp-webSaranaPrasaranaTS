@@ -9,6 +9,18 @@ class Dashboard extends My_Controller
 		parent::__construct();
 		$this->load->model('modelku');
 		$this->load->helper('url');
+
+		if($this->session->userdata('username'))
+		{
+			if($this->session->userdata('level') == "admin")
+			{
+				redirect('admin/admin');
+			}
+			elseif($this->session->userdata('level') == "member")
+			{
+				redirect('member/member');
+			}
+		}
 	}
 
 	public function index()
@@ -73,7 +85,7 @@ class Dashboard extends My_Controller
 	{
 		$where = array
 		(
-			'id_barang' => $id
+			'id_barang_masuk' => $id
 		);
 		$data['detail_barang'] = $this->modelku->tampil_detail($where, 'detail_barang')->result();
 		$this->load->view('guest/barang/detail_barang', $data);
@@ -133,6 +145,7 @@ class Dashboard extends My_Controller
 	{
 		$data['side']='guest/tampil/side';
 		$data['content']='guest/barang/v_peminjaman';
+		$data['idbarang'] = $this->modelku->select_idBrang();
 		$this->load->view('guest/tampil/main', $data);
 	}
 
@@ -154,6 +167,54 @@ class Dashboard extends My_Controller
 	{
 		$data['side']='guest/tampil/side';
 		$data['content']='guest/barang/v_pengembalian_barangHilang';
+		$data['idbarang'] = $this->modelku->select_idBrang();
 		$this->load->view('guest/tampil/main', $data);
 	}
+
+	public function listInv()
+	{
+	    // Ambil data ID Provinsi yang dikirim via ajax post
+	    $id_barang = $this->input->post('id_barang');
+    
+	    $inv = $this->modelku->select_inv($id_barang);
+	    
+	    // Buat variabel untuk menampung tag-tag option nya
+	    // Set defaultnya dengan tag option Pilih
+	    $lists = "<option value='' disabled='true'>Pilih No Inventaris</option>";
+	    
+	    foreach($inv as $data){
+	      $lists .= "<option value='".$data->no_inv."'>".$data->no_inv."</option>"; // Tambahkan tag option ke variabel $lists
+	    }
+	    
+	    $callback = array('list_inv'=>$lists); // Masukan variabel lists tadi ke dalam array $callback dengan index array : list_kota
+	    echo json_encode($callback); // konversi varibael $callback menjadi JSON
+  	}
+
+  	public function listInvKmbli()
+  	{
+  		$id_peminjaman = $this->input->post('id_peminjaman');
+  		$id_barang_keluar = $this->input->post('id_barang_keluar');
+  		$id_barang = $this->input->post('id_barang');
+
+  		$inv = $this->modelku->select_invKmbli($id_peminjaman, $id_barang_keluar, $id_barang);
+	    
+	    // Buat variabel untuk menampung tag-tag option nya
+	    // Set defaultnya dengan tag option Pilih
+	    $lists = "<option value='' disabled='true'>Pilih No Inventaris</option>";
+	    
+	    foreach($inv as $data){
+	      $lists .= "<option value='".$data->no_inv."'>".$data->no_inv."</option>"; // Tambahkan tag option ke variabel $lists
+	    }
+	    
+	    $callback = array('list_inv'=>$lists); // Masukan variabel lists tadi ke dalam array $callback dengan index array : list_kota
+	    echo json_encode($callback); // konversi varibael $callback menjadi JSON
+  	}
+
+  	public function bantuan()
+  	{
+  		$data['t_ruang'] = $this->modelku->tampil_data('t_ruang')->result();
+		$data['side']='guest/tampil/side';
+		$data['content']='guest/v_help';
+		$this->load->view('guest/tampil/main', $data);
+  	}
 }

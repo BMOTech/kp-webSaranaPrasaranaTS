@@ -45,7 +45,7 @@
 				<?php } ?>
 			</tbody>
 		</table>
-		<table class="table table-bordered table-striped">
+		<table class="table table-bordered">
 			<tr>
 				<td><button class="btn btn-warning" onclick="ngedit_user(<?php echo $tadmin->id;?>)">Edit Profile</button></td>
 			</tr>

@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Barang</title>
+    <link href="<?php echo base_url('_tamplate/plugins/select2/select2.css') ?>" rel="stylesheet" />
 </head>
 <body>
     <div class="container">
@@ -12,25 +13,28 @@
                 <?php echo form_open("guest\Barang\barang/input_barang_pengembalian"); ?>
                 <div class="form-group">
                     <?php
-                    echo form_label('ID Barang Keluar','id_barang_keluar');
-                    echo form_input('id_barang_keluar','','class="form-control" id="id_barang_keluar" placeholder="ID Barang Keluar" required')
-                    ?>
-                    <p><i>*Id peminjaman dari barang yang anda pinjam.</i></p>
-                </div>
-                <div class="form-group">
-                    <?php
                     echo form_label('ID Peminjaman','id_peminjaman');
                     echo form_input('id_peminjaman','','class="form-control" id="id_peminjaman" placeholder="ID Peminjaman" required')
                     ?>
-                    <p><i>*Id barang keluar dari barang yang anda pinjam.</i></p>
+                    <p><i>*Id peminjaman dari barang yang anda pinjam. (Bisa di cek di Data Peminjaman.)</i></p>
+                </div>
+                <div class="form-group">
+                    <?php
+                    echo form_label('ID Barang Keluar','id_barang_keluar');
+                    echo form_input('id_barang_keluar','','class="form-control" id="id_barang_keluar" placeholder="ID Barang Keluar" required')
+                    ?>
+                    <p><i>*Id barang keluar dari barang yang anda pinjam. (Bisa di cek di Data Peminjaman.)</i></p>
                 </div>
                 <div class="form-group">
                     <label>ID Barang</label><br>
-                    <select name="id_barang" id="id_barang" class="form-control">
-                        <?php $idBrang = $this->modelku->select_idBrang() ?>
-                        <?php foreach($idBrang->result() as $idBr){ ?>
-                            <option value="<?php echo $idBr->id_barang?>"><?php echo $idBr->id_barang?></option>
-                        <?php } ?>
+                    <select name="id_barang" id="id_barang" class="form-control id_barang">
+                        <option selected="true" disabled="true" data-foo="">Pilih ID Barang</option>
+                        <?php
+                        foreach ($idbarang as $barang) 
+                        {
+                            echo '<option value="'.$barang->id_barang.'" data-foo="'.$barang->nama_barang.'">'.$barang->id_barang.'</option>';
+                        }
+                        ?>
                     </select required>
                 </div>
                 <div class="form-group">
@@ -40,33 +44,16 @@
                     <input type="number" min="1" name="jumlah_kembali" id="jumlah_kembali" class="form-control" min="1" required>
                 </div>
                 <div class="form-group">
-                    <label>No Inventaris</label>
-                    <div id="container">
-                        <input type="button" name="noInv" class="form-control" id="add_field" value="Klik untuk membuat text field baru"><br>
-                        <p><i>*Klik kemudian pilih no inventaris barang yang akan dikembalikan.</i></p>
-                        <script type="text/javascript">
-                        var count = 0;
-                        $(function(){
-                            $('#add_field').click(function(){
-                                jml = $("#jumlah_kembali").val();
-                                count += 1;
-                                if (count <= jml) 
-                                {
-                                    $('#container').append(
-                                        '<strong>No Inv Barang Ke ' + count + '</strong><br />' 
-                                        + '<select id="field_' + count + '" name="fields[]' + '"  class="form-control no_inv" ><?php $noInv = $this->modelku->select_invPinjam() ?> <option value="" selected="selected" disabled>Pilih no inventaris</option> <?php foreach($noInv->result() as $inv){ ?> <option value="<?php echo $inv->no_inv ?>"><?php echo $inv->no_inv ?></option><?php } ?></select><br>' );
-                                }
-                                else
-                                {
-                                    alert("Tidak bisa menambahkan! Silahkan tambah jumlah jika ingin menambahkan lagi!");
-                                    location.reload();
-                                }
-                            
-                            });
-                        });
-                        </script> 
+                    <label>No Inventaris</label><br>
+                    <select class="form-control no_inv" name="inve[]" id="no_inv" multiple="multiple">
+                        <option value="" disabled="true">Pilih No Inventaris</option>
+                    </select>
 
+                    <div id="loading" style="margin-top: 15px;">
+                        <img src="<?php echo base_url('assets/img/loading.gif') ?>" width="18"> <small>Loading...</small>
                     </div>
+                    <div class="alert alert-danger" id="noInv_error_message"></div>
+                    <p><i>*Pastikan ID Peminjaman, ID Barang Keluar, dan ID Barang sesuai dengan yang telah dipinjam, untuk menampilkan no inventaris yang sudah dipinjam.</i></p>
                 </div>
                 <div class="form-group">
                     <?php
@@ -87,11 +74,53 @@
         <div class="col-md-4"></div>
       </div>
     </div>
+    <script src="<?php echo base_url('_tamplate/plugins/select2/select2.js') ?>"></script>
 </body>
 <script type="text/javascript">
     $(document).ready(function(){
         $('.kmblianBtn').attr('disabled',true);
     });
+
+    $(document).ready(function() {
+        $('.no_inv').select2();
+    });
+
+    $(document).ready(function() {
+        $('.id_barang').select2({
+            matcher: matchCustom,
+            templateResult: formatCustom,
+            minimumResultsForSearch: -1
+        });
+    });
+
+    function matchCustom(params, data) {
+        // If there are no search terms, return all of the data
+        if ($.trim(params.term) === '') {
+            return data;
+        }
+        // Do not display the item if there is no 'text' property
+        if (typeof data.text === '') {
+            return null;
+        }
+        // Match text of option
+        if (stringMatch(params.term, data.text)) {
+            return data;
+        }
+        // Match attribute "data-foo" of option
+        if (stringMatch(params.term, $(data.element).attr('data-foo'))) {
+            return data;
+        }
+        // Return `null` if the term should not be displayed
+        return null;
+    }
+
+    function formatCustom(state) {
+        return $(
+            '<div><div>' + state.text + '</div><div class="foo">'
+                + $(state.element).attr('data-foo')
+                + '</div></div>'
+        );
+    }
 
     function njajal()
     {
@@ -99,83 +128,155 @@
         var idbrangklr = $("#id_barang_keluar").val().length;
         var pnggungjwb = $("#penanggung_jawab").val().length;
         var tglkmbli = $("#tgl_kembali").val();
-        var invene = $(".no_inv").val().length;
 
-        if (invene < 6 && idbrangklr < 7 && pnggungjwb < 3 && idpnjm < 7 && tglkmbli == "") 
+        if (error_inv == true && idbrangklr < 7 && pnggungjwb < 3 && idpnjm < 7 && tglkmbli == "") 
         {
             $('.kmblianBtn').attr('disabled',true);
         }
-        else if (invene >= 6 && idbrangklr >= 7 && pnggungjwb >= 3 && idpnjm >= 7 && tglkmbli != "")
+        else if (error_inv == false && idbrangklr >= 7 && pnggungjwb >= 3 && idpnjm >= 7 && tglkmbli != "")
         {
             $('.kmblianBtn').attr('disabled',false);
         }
     }
 
-    $("#id_peminjaman").focusout(function() {
-        njajal();    
-    });
+    $(function() 
+    {
+        $("#noInv_error_message").hide();
+        error_inv = false;
 
-    $("#id_barang_keluar").focusout(function() {
-        njajal();    
-    });
+        $("#id_peminjaman").focusout(function() {
+            njajal();    
+        });
 
-    $("#penanggung_jawab").focusout(function() {
-        njajal();    
-    });
+        $("#id_barang_keluar").focusout(function() {
+            njajal();    
+        });
 
-    $("#tgl_kembali").focusout(function() {
-        njajal();    
-    });
+        $("#penanggung_jawab").focusout(function() {
+            njajal();    
+        });
 
-    $(".no_inv").focusout(function() {
-        njajal();    
-    });
+        $("#tgl_kembali").focusout(function() {
+            njajal();    
+        });
 
-    $(document).ready(function() {
-    var count =0;
-    var previous;
-    var selectedData = [];
-    $('body').on('click','.no_inv',function(){
-          previous = this.value;
-         
-    });
+        $(".select2-selection__rendered").focusout(function() {
 
+            check_inv();
+            njajal();
+                
+        });
 
-    $('body').on('change','.no_inv',function(){
-        var val = this.value;
-        var id = $(this).attr('id');
-        
-        if(val != ''){
-        
-            $(".no_inv").each(function(){
-               var newID = $(this).attr('id');
-               if(id != newID){
-                  $('#'+newID).children('option[value="' + val + '"]').prop('disabled',true);
-                   $('#'+newID).children('option[value="' + previous + '"]').prop('disabled',true);
-                   
-                   selectedData.splice($.inArray(val, selectedData),1);
-               }else{
-                  selectedData.push(val);
-               
-               }
-            
-            });
+        $("#jumlah_kembali").focusout(function() {
 
-            
-        }else{
+            check_inv();
+            njajal();
+                
+        });
 
-          $(".no_inv").each(function(){
-               var newID = $(this).attr('id');
-               if(id != newID){
-                $('#'+newID).children('option[value="' + val + '"]').prop('disabled',true);
-                  $('#'+newID).children('option[value="' + previous + '"]').prop('disabled',true);
-                  
-               }
-            
-            });
-        
+        function check_inv() 
+        {
+            jml = $("#jumlah_kembali").val();
+            invTerselect = $('.no_inv option:selected').size();
+
+            if (invTerselect > jml) 
+            {
+                $("#noInv_error_message").html("<p class='errInv'>No Inventaris yang dipilih melebihi jumlah yang akan dipinjam!</p>");
+                $("#noInv_error_message").show();
+                $('.pnjmBtn').attr('disabled',true);
+                error_inv = true;
+            }
+            else if (invTerselect < jml) 
+            {
+                $("#noInv_error_message").html("<p class='errInv'>No Inventaris yang dipilih terlalu sedikit dari jumlah yang akan dipinjam.</p>");
+                $("#noInv_error_message").show();
+                $('.pnjmBtn').attr('disabled',true);
+                error_inv = true;
+            }
+            else
+            {
+                $("#noInv_error_message").hide();
+                error_inv = false;
+            }
+
         }
     });
-});
+
+
+    $(document).ready(function(){
+        $("#loading").hide();
+        
+        $("#id_barang").change(function(){
+          $(".no_inv").hide();
+          $("#loading").show();
+        
+          $.ajax({
+            type: "POST",
+            url: "<?php echo base_url("guest/dashboard/listInvKmbli"); ?>",
+            data: {id_barang : $("#id_barang").val(), id_peminjaman : $("#id_peminjaman").val(), id_barang_keluar : $("#id_barang_keluar").val()},
+            dataType: "json",
+            beforeSend: function(e) {
+              if(e && e.overrideMimeType) {
+                e.overrideMimeType("application/json;charset=UTF-8");
+              }
+            },
+            success: function(response){
+              $("#loading").hide();
+              $(".no_inv").html(response.list_inv).show();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+              alert(xhr.status + "\n" + xhr.responseText + "\n" + thrownError);
+            }
+          });
+        });
+
+        $("#id_peminjaman").change(function(){
+          $(".no_inv").hide();
+          $("#loading").show();
+        
+          $.ajax({
+            type: "POST",
+            url: "<?php echo base_url("guest/dashboard/listInvKmbli"); ?>",
+            data: {id_barang : $("#id_barang").val(), id_peminjaman : $("#id_peminjaman").val(), id_barang_keluar : $("#id_barang_keluar").val()},
+            dataType: "json",
+            beforeSend: function(e) {
+              if(e && e.overrideMimeType) {
+                e.overrideMimeType("application/json;charset=UTF-8");
+              }
+            },
+            success: function(response){
+              $("#loading").hide();
+              $(".no_inv").html(response.list_inv).show();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+              alert(xhr.status + "\n" + xhr.responseText + "\n" + thrownError);
+            }
+          });
+        });
+
+        $("#id_barang_keluar").change(function(){
+          $(".no_inv").hide();
+          $("#loading").show();
+        
+          $.ajax({
+            type: "POST",
+            url: "<?php echo base_url("guest/dashboard/listInvKmbli"); ?>",
+            data: {id_barang : $("#id_barang").val(), id_peminjaman : $("#id_peminjaman").val(), id_barang_keluar : $("#id_barang_keluar").val()},
+            dataType: "json",
+            beforeSend: function(e) {
+              if(e && e.overrideMimeType) {
+                e.overrideMimeType("application/json;charset=UTF-8");
+              }
+            },
+            success: function(response){
+              $("#loading").hide();
+              $(".no_inv").html(response.list_inv).show();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+              alert(xhr.status + "\n" + xhr.responseText + "\n" + thrownError);
+            }
+          });
+        });
+      });
 </script>
 </html>

@@ -12,8 +12,8 @@
 				<table id="table_id" class="table table-bordered table-striped table-hover">
 					<thead>
 						<tr>
-							<th>ID Barang Keluar</th>
 							<th>ID Peminjaman</th>
+							<th>ID Barang Keluar</th>
 							<th>ID Barang</th>
 							<th>Tanggal Peminjaman</th>
 							<th>Tanggal Kembali</th>
@@ -28,8 +28,8 @@
 						foreach($t_peminjaman as $tpinjam)
 						{?>
 							<tr>
-								<td><?php echo $tpinjam->id_barang_keluar ?></td>
 								<td><?php echo $tpinjam->id_peminjaman ?></td>
+								<td><?php echo $tpinjam->id_barang_keluar ?></td>
 								<td><?php echo $tpinjam->id_barang ?></td>
 								<td><?php echo $tpinjam->tgl_peminjaman ?></td>
 								<td><?php echo $tpinjam->tgl_kembali ?></td>
@@ -37,7 +37,7 @@
 								<td><?php echo $tpinjam->jumlah ?></td>
 								<td><?php echo $tpinjam->keterangan ?></td>
 								<td>
-									<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tilang->id_peminjaman;?>&quot;)">Detail</button>
+									<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $tpinjam->id_peminjaman;?>&quot;)">Detail</button>
 								</td>
 							</tr>
 						<?php } ?>

@@ -1,100 +1,218 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<title>Sarana dan Prasarana Telkom Schools</title>
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/bstrp/css/bootstrap.css') ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/bstrp/css/bootstrap.min.css') ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/bstrp/css/bootstrap-theme.css') ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/bstrp/css/style.css') ?>">
-</head>
-<body>
+<html lang="en">
 
-    <div class="header-overlay" style="background-color: #080d15; opacity: .5;">
+  <head>
 
-    </div>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-    <div id="header-home">
-      <img src="assets/img/head.jpg" style="width: 100%; height: 672px; background-size: cover; background-position: center center;  max-width: 100%; height: 100vh;">
-      <div class="col-sm-12" style="position: absolute; top: 45%; z-index: 2; font-size: 50px; color: white; text-align: left; padding-left: 150px; top: 190px; width: 100%;">
-        Cobalah untuk menjadi guest agar bisa melakukan<br> peminjaman langsung tanpa melalui proses<br> pendaftaran.<br><br>
-        <button class="cbaBtn" style="background: transparent; border-radius: 50px; width:200px; margin-top: -30px;"><a href="<?php echo site_url('guest/Dashboard') ?>" style="text-decoration: none; color: white; font-size: 40px; text-align: center;"><p style="margin-top: 5px;">Coba</p></a></button>
+    <title>Sarana dan Prasarana SMK TELKOM PURWOKERTO</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="<?php echo base_url('assets/home/vendor/bootstrap/css/bootstrap.min.css') ?>" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="<?php echo base_url('assets/home/vendor/font-awesome/css/font-awesome.min.css') ?>" rel="stylesheet" type="text/css">
+    <link href="<?php echo base_url('assets/fonts/SEGOEUI.TTF') ?>">
+    <link href="<?php echo base_url('assets/fonts/SEGOEUI.TTF') ?>" rel='stylesheet' type='text/css'>
+
+    <!-- Plugin CSS -->
+    <link href="<?php echo base_url('assets/home/vendor/magnific-popup/magnific-popup.css') ?>" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="<?php echo base_url('assets/home/css/creative.min.css') ?>" rel="stylesheet">
+
+  </head>
+
+  <body id="page-top">
+
+
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="<?php echo base_url('') ?>"><img src="<?php echo base_url('assets/img/logone.png') ?>" style="width: 100px; height: 40px;"></a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#about">Tentang</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#hiw">Cara Kerja</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#" data-toggle="modal" data-target="#exampleModal">Masuk/Daftar</a>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
+    </nav>
 
-    <div id="about">
-    <div class="about-container">
-      <div class="about-content">
-        <h3>Apa itu Sarana dan Prasarana SMK Telkom Purwokerto?</h3><br><br>
-          <p class="apaSarana">Sarana dan prasarana SMK Telkom Purwokerto adalah segala sesuatu yang ada pada lingkungan SMK Telkom Sandhyputra Purwokerto yang memiliki nilai untuk dipergunakan oleh seluruh warga SMK Telkom Sandhyputra Purwokerto. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-          quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-          consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-          cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-          proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      </div>
-    </div>
-  </div>
-
-  <div id="howitworks">
-    <div class="hiwcontainer">
-      <div class="content1-3">
-        <h1><center>Bagaimana cara kerjanya?</center></h1><br><br>
+    <header class="masthead text-center text-white d-flex">
+      <div class="container my-auto">
         <div class="row">
-          <div class="col-sm-4">
-            <img src="assets/img\1.png" style="width: 200px; height: 200px;"><br><br>
-            <p style="font-size: 20px;">Kunjungi dashboard</p>
+          <div class="col-lg-10 mx-auto">
+            <h1 class="text-uppercase">
+              <strong>Sarana dan Prasarana SMK Telkom Purwokerto</strong>
+            </h1>
+            <hr>
           </div>
-          <div class="col-sm-4">
-            <img src="assets/img\2.png" style="width: 200px; height: 200px;"><br><br>
-            <p style="font-size: 20px;">Input barang yang akan dipinjam</p>
-          </div>
-          <div class="col-sm-4">
-            <img src="assets/img\3.png" style="width: 200px; height: 200px;"><br><br>
-            <p style="font-size: 20px;">Pinjam !</p>
+          <div class="col-lg-8 mx-auto">
+            <p class="text-faded mb-5">Web Sarana dan Prasarana SMK Telkom yang befungsi untuk memudahkan semua warga sekolah untuk menggunakan sarana dan prasarana pendidikan di SMK Telkom.</p>
+            <a class="btn btn-primary btn-xl js-scroll-trigger" href="#about">Pelajari Lebih Lanjut</a>
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    </header>
 
-  <div id="partner">
-    <div class="partner-container">
-      <div class="content1-3">
-        <h1><center>Partner</center></h1><br><br>
+    <section class="bg-primary" id="about">
+      <div class="container">
         <div class="row">
-          <div class="col-sm-4">
-            <img src="assets/img\ts.png" style="width: 200px; height: 200px;"><br><br>
-          </div>
-          <div class="col-sm-4">
-            <img src="assets/img\telkom.png" style="width: 200px; height: 200px;"><br><br>
-          </div>
-          <div class="col-sm-4">
-            <img src="assets/img\st3.png" style="width: 200px; height: 200px;"><br><br><br><br>
-          </div>
-          <div class="col-sm-4">
-            <img src="assets/img\telu.png" style="width: 200px; height: 200px;"><br><br>
-          </div>
-          <div class="col-sm-4">
-            <img src="assets/img\telkomsel.png" style="width: 200px; height: 200px;"><br><br>
-          </div>
-          <div class="col-sm-4">
-            <img src="assets/img\yayasan.png" style="width: 200px; height: 200px;"><br><br>
+          <div class="col-lg-8 mx-auto text-center">
+            <h2 class="section-heading text-white">Apa itu Sarana dan Prasarana SMK Telkom Purwokerto?</h2>
+            <hr class="light my-4">
+            <p class="text-faded mb-4">Sarana dan Prasarana SMK Telkom Purwokerto adalah semua fasilitas pendidikan yang diperlukan dalam proses belajar mengajar, baik yang bergerak maupun yang tidak bergerak agar pencapaian tujuan pendidikan dan berjalan dengan lancar, teratur, efektif dan efisien.</p>
+            <a class="btn btn-light btn-xl js-scroll-trigger" href="#hiw">Coba Sekarang!</a>
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <div id="footer">
-    <div class="footer-container">
-      <p class="kataFooter"><center style="color: white; font-size: 15px;">Web Sarana dan Prasarana SMK Telkom Purwokerto C by Kelompok 7</center></p>
-    </div>
-  </div>
-  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <script src="<?php echo base_url('assets/bstrp/js/jquery.min.js') ?>"></script>
-  <script src="<?php echo base_url('assets/bstrp/js/jquery.js') ?>"></script>
-  <script src="<?php echo base_url('assets/bstrp/js/main.js') ?>"></script>
-  <!-- Include all compiled plugins (below), or include individual files as needed -->
-  <script src="<?php echo base_url('assets/bstrp/js/bootstrap.min.js') ?>"></script>
-</body>
+    <section id="hiw">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 text-center">
+            <h2 class="section-heading">Bagaimana Cara Kerjanya?</h2>
+            <hr class="my-4">
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-3 col-md-6 text-center">
+            <div class="service-box mt-5 mx-auto">
+              <i class="fa fa-4x fa-user-plus text-primary mb-3 sr-icons"></i>
+              <h3 class="mb-3">Daftar</h3>
+              <p class="text-muted mb-0">Bergabunglah bersama kami untuk bisa meminjam fasilitas sekolah.</p>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 text-center">
+            <div class="service-box mt-5 mx-auto">
+              <i class="fa fa-4x fa-sign-in text-primary mb-3 sr-icons"></i>
+              <h3 class="mb-3">Login</h3>
+              <p class="text-muted mb-0">Masuk dengan akun kamu agar bisa meminjam fasilitas sekolah</p>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 text-center">
+            <div class="service-box mt-5 mx-auto">
+              <i class="fa fa-4x fa-handshake-o text-primary mb-3 sr-icons"></i>
+              <h3 class="mb-3">Peminjaman</h3>
+              <p class="text-muted mb-0">Lakukanlah peminjaman dengan cara mengisi form peminjaman</p>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 text-center">
+            <div class="service-box mt-5 mx-auto">
+              <i class="fa fa-4x fa-suitcase text-primary mb-3 sr-icons"></i>
+              <h3 class="mb-3">Pinjam Barang</h3>
+              <p class="text-muted mb-0">Ambil dan pinjam barang yang akan anda pinjam</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-dark text-white">
+      <div class="container text-center">
+        <h2 class="mb-4">Masuk Sebagai Guest</h2>
+        <p>Malas untuk mendaftar? Cobalah masuk sebagai guest.</p>
+        <a class="btn btn-light btn-xl sr-button" href="<?php echo base_url('guest/dashboard') ?>">Masuk Sebagai Guest!</a>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto text-center">
+            <h2 class="section-heading">Kontak Kami</h2>
+            <hr class="my-4">
+            <p class="mb-5">Kami sangat menghargai kritik dan saran dari anda. kontak kami bisa melalui:</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 ml-auto text-center">
+            <i class="fa fa-phone fa-3x mb-3 sr-contact"></i>
+            <p>+62 852-9118-5696</p>
+          </div>
+          <div class="col-lg-4 mr-auto text-center">
+            <i class="fa fa-envelope-o fa-3x mb-3 sr-contact"></i>
+            <p>
+              <a href="mailto:sarana.prasarana.ts.pwt@gmail.com">sarana.prasarana.ts.pwt@gmail.com</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="page-footer center-on-small-only">
+      <!--Copyright-->
+      <div class="footer-copyright">
+          <div class="container-fluid" style="width: 100%; height: 50px; background-color: #212529;">
+              <p class="text-center text-white" style="padding-top: 15px; margin-bottom: 0px;">© 2018 Copyright: KP Kelompok 7</p>
+          </div>
+      </div>
+      <!--/.Copyright-->
+    </footer>
+    
+    <!-- Bootstrap core JavaScript -->
+    <script src="<?php echo base_url('assets/home/vendor/jquery/jquery.min.js') ?>"></script>
+    <script src="<?php echo base_url('assets/home/vendor/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="<?php echo base_url('assets/home/vendor/jquery-easing/jquery.easing.min.js') ?>"></script>
+    <script src="<?php echo base_url('assets/home/vendor/scrollreveal/scrollreveal.min.js') ?>"></script>
+    <script src="<?php echo base_url('assets/home/vendor/magnific-popup/jquery.magnific-popup.min.js') ?>"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="<?php echo base_url('assets/home/js/creative.min.js') ?>"></script>
+
+  </body>
+
 </html>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="padding-top: 50px;">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Login</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="<?php echo base_url('utama/login_process') ?>" method="post">
+              <div class="form-group">
+                <label for="username" class="form-control-label">Username:</label>
+                <input type="text" name="username" class="form-control" id="username">
+              </div>
+              <div class="form-group">
+                <label for="password" class="form-control-label">Password:</label>
+                <input type="password" name="password" class="form-control" id="password">
+              </div>
+              <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <span class="text-left">
+              <p class="text-left">Belum punya akun? <a href="<?php echo base_url('signUp/daftar') ?>">Daftar </a></p>
+            </span>
+          </div>
+        </div>
+      </div>
+  </div>

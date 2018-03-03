@@ -4,13 +4,15 @@
 	<title>Histori Pinjam</title>
 </head>
 <body>
+	<?=$this->session->flashdata('notif')?>
 	<h1 class="text-center">Histori Peminjaman</h1><br>
 	<div id="tmpModal"></div>
-	<?=$this->session->flashdata('notif')?>
 	<div class="table-responsive">
+	<form action="<?php echo base_url('admin/barang/barang/hapusHistoriPnjm') ?>" method="post" id="delete">
 	<table id="table_id" class="table table-bordered table-striped table-hover">
 		<thead>
 			<tr>
+				<th><input type="checkbox" name="ckall" id="ckall"></th>
 				<th>ID Peminjaman</th>
 				<th>ID Barang Keluar</th>
 				<th>ID Barang</th>
@@ -28,6 +30,7 @@
 			foreach($t_histori_pinjam as $thpinjam)
 			{?>
 				<tr>
+					<td><input type="checkbox" name="ckbdelete[]" value="<?php echo $thpinjam->id_peminjaman; ?>"></td>
 					<td><?php echo $thpinjam->id_peminjaman?></td>
 					<td><?php echo $thpinjam->id_barang_keluar?></td>
 					<td><?php echo $thpinjam->id_barang?></td>
@@ -38,9 +41,9 @@
 					<td><?php echo $thpinjam->jumlah ?></td>
 					<td><?php echo $thpinjam->keterangan ?></td> 
 					<td>
-						<button class="btn btn-warning" onclick="ngedit_barang(<?php echo $thpinjam->id;?>)">Edit</button>
-						<button class="btn btn-info" onclick="detail_barang(&quot;<?php echo $thpinjam->id_peminjaman;?>&quot;)">Detail</button>
-						<button class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $thpinjam->id_peminjaman;?>&quot;)">Hapus</button>
+						<button type="button" class="btn btn-warning" onclick="ngedit_barang(<?php echo $thpinjam->id;?>)"><i class="glyphicon glyphicon-edit"></i></button>
+						<button type="button" class="btn btn-info" onclick="detail_barang(&quot;<?php echo $thpinjam->id_peminjaman;?>&quot;)"><i class="glyphicon glyphicon-info-sign"></i></button>
+						<button type="button" class="btn btn-danger" onclick="ngapus_barang(&quot;<?php echo $thpinjam->id_peminjaman;?>&quot;)"><i class="glyphicon glyphicon-trash"></i></button>
 					</td>
 				</tr>
 			<?php } ?>
@@ -48,9 +51,10 @@
 	</table>
 		<table class="table table-bordered table-striped">
 			<tr>
-				<button class="btn btn-danger" onclick="ngapus_semua_barang()">Hapus Semua Data</button>
+				<button type="button" class="btn btn-danger" onclick="ngapusper_barang()">Hapus</button><br><br>
 			</tr>
 		</table>
+	</form>
 </div>
 
 	<!-- Bootstrap modal Edit and Add -->
@@ -68,25 +72,25 @@
 	          	<div class="form-group">
 	              <label class="control-label col-md-3">ID Peminjaman</label>
 	              <div class="col-md-9">
-	                <input type="text" class="id_peminjaman" name="id_peminjaman" id="id_peminjamane">
-                    <input type="button" id="btn_id_peminjaman" value="Get" onclick="GetRandomID('id_peminjamane');">
+	                <input type="text" class="form-control id_peminjaman" name="id_peminjaman" id="id_peminjaman">
 	              </div>
 	            </div>
 	            <div class="form-group">
 	              <label class="control-label col-md-3">ID Barang Keluar</label>
 	              <div class="col-md-9">
-	                <input type="text" class="id_barang_keluar" name="id_barang_keluar" id="id_barang_keluare">
-                    <input type="button" id="btn_id_barang_keluar" value="Get" onclick="GetRandomID('id_barang_keluare');">
+	                <input type="text" class="form-control id_barang_keluar" name="id_barang_keluar" id="id_barang_keluar">
 	              </div>
 	            </div>
 	            <div class="form-group">
 	              <label class="control-label col-md-3">ID Barang</label>
 	              <div class="col-md-9">
 	                <select name="id_barang" id="id_barang" class="form-control">
-                        <?php $idBrang = $this->modelku->select_idBrang() ?>
-                        <?php foreach($idBrang->result() as $idBr){ ?>
-                            <option value="<?php echo $idBr->id_barang?>"><?php echo $idBr->id_barang?></option>
-                        <?php } ?>
+                        <?php 
+                            foreach($idbarang as $barang)
+                            { 
+                              echo '<option value="'.$barang->id_barang.'">'.$barang->id_barang.'</option>';
+                            }
+                        ?>
                     </select required>
 	              </div>
 	            </div>
@@ -305,6 +309,19 @@
 
 	      }
 	    }
+
+	    function ngapusper_barang()
+	    {
+
+	      if(confirm('Anda yakin akan menghapusnya ?'))
+	      {
+	      	$('#delete').submit();
+	      }
+	    }
+
+	    $("#ckall").click(function(){
+		    $('input:checkbox').not(this).prop('checked', this.checked);
+		});
 	</script>
 </body>
 </html>

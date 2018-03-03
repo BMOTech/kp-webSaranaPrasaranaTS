@@ -24,7 +24,6 @@ class Utama extends CI_Controller
 	public function index()
 	{
 		$data = array('error' => '');
-		$this->load->view('content/v_headerHome', $data);
 		$this->load->view('content/v_home', $data);
 	}
 
@@ -70,43 +69,33 @@ class Utama extends CI_Controller
 				redirect('member/member');
 			}
 		}
-		else
-		{
-			
-			?>
-				<script type="text/javascript">
-					alert("Username dan kata sandi yang dimasukan salah!");
-				</script>
-			<?php
-		}
-
 
 		//For Admin
 		if($result2->num_rows() > 0)
 		{
-			foreach ($result2->result() as $garis) 
+			foreach ($result2->result() as $row) 
 			{
-				$id = $garis->id;
-				$username = $garis->username;
-				$password = $garis->password;
-				$emailku = $garis->email;
-				$fullname = $garis->fullname;
-				$level = $garis->level;
+				$id = $row->id;
+				$username = $row->username;
+				$password = $row->password;
+				$emaile = $row->email;
+				$fullnamee = $row->fullname;
+				$level = $row->level;
 			}
 
-			$newdata2 = array
+			$newdata = array
 			(
-			        'id'  => $id,
-			        'username' => $username,
-			        'password' => $password,
-			        'email' => $emailku,
-			        'fullname' => $fullname,
-			        'level' => $level,
-			        'logged_in' => TRUE
+		        'id'  => $id,
+		        'username' => $username,
+		        'password' => $password,
+		        'email' => $emaile,
+		        'fullname' => $fullnamee,
+		        'level' => $level,
+		        'logged_in' => TRUE
 			);
 			
 			//set up session data
-			$this->session->set_userdata($newdata2);
+			$this->session->set_userdata($newdata);
 			if($this->session->userdata('level')=='admin') 
 			{
 				redirect('admin/admin');
@@ -116,14 +105,17 @@ class Utama extends CI_Controller
 				redirect('member/member');
 			}
 		}
-		else
-		{
 
-			?>
-				<script type="text/javascript">
-					alert("Username dan kata sandi yang dimasukan salah!");
-				</script>
-			<?php
+		if ($result->num_rows() <= 0 && $result2->num_rows() <= 0)
+		{
+			$this->load->view('404nf_wrong_login');	
 		}
+	}
+
+	public function help()
+	{
+		$data['side']='admin/tampil/side';
+		$data['content']='v_help';
+		$this->load->view('admin/tampil/main', $data);
 	}
 }

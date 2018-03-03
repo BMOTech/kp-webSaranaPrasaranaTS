@@ -29,6 +29,8 @@
     <meta name="viewport" content="width=device-width" />
 </head>
 <body>
+  <div class="overlay"></div>
+  <img id="loading"  width="250px" src="<?=base_url()?>assets/img/loading.gif" alt="Loading...">
 	<nav class="navbar navbar-fixed" style="height: 5px; width: 100%;">
       <div class="container">
         <div class="navbar-header">
